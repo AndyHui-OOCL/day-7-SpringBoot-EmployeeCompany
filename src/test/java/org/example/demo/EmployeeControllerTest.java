@@ -1,6 +1,6 @@
 package org.example.demo;
 
-import org.example.demo.controller.EmployeeController;
+import org.example.demo.controller.employee.EmployeeController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

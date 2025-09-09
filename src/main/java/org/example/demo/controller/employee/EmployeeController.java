@@ -1,4 +1,4 @@
-package org.example.demo.controller;
+package org.example.demo.controller.employee;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,7 @@ public class EmployeeController {
     private static long idCounter = 0;
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> createEmployee(@RequestBody Employee employee) {
+    public ResponseEntity<Map<String, Long>> createEmployee(@RequestBody Employee employee) {
         employee.setId(++idCounter);
         employees.add(employee);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("id", employee.getId()));
