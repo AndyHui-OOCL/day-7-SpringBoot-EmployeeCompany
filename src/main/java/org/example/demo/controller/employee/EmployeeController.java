@@ -32,7 +32,7 @@ public class EmployeeController {
     }
 
     @GetMapping()
-    public List<Employee> getAllEmployee() {
+    public List<Employee> getAllEmployees() {
         return employees;
     }
 
