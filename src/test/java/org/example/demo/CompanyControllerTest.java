@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,5 +48,23 @@ public class CompanyControllerTest {
                         .content(requestBody))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1));
+    }
+
+    @Test
+    void should_get_company_when_get_given_valid_employee_id() throws Exception {
+        String requestBody = """
+                {
+                    "name": "Apple"
+                }
+                """;
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody));
+
+        mockMvc.perform(get("/v1/companies/{id}", 1)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("Apple"));
     }
 }

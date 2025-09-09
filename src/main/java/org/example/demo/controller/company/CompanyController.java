@@ -1,6 +1,5 @@
 package org.example.demo.controller.company;
 
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,5 +19,10 @@ public class CompanyController {
         company.setId(++idCounter);
         companies.add(company);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("id", company.getId()));
+    }
+
+    @GetMapping("/{id}")
+    public Company getCompanyById(@PathVariable long id) {
+        return companies.stream().filter(company -> company.getId() == id).findFirst().orElse(null);
     }
 }
