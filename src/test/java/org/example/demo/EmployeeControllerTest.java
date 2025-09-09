@@ -22,7 +22,7 @@ public class EmployeeControllerTest {
     void should_create_employee_when_post_given_valid_employee() throws Exception {
         String requestBody = """
                 {
-                    "name": "Andy",
+                    "name": "John Smith",
                     "age": 34,
                     "salary": 5000.0,
                     "gender": "Male"
@@ -33,13 +33,18 @@ public class EmployeeControllerTest {
                     .content(requestBody))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1));
-
     }
 
     @Test
     void should_get_employee_when_get_given_valid_employee_id() throws Exception {
-        long pathParameterId = 1;
+        mockMvc.perform(get("/v1/employees/{id}", 1)
+                    .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("John Smith"))
+                .andExpect(jsonPath("$.age").value(34))
+                .andExpect(jsonPath("$.gender").value("Male"))
+                .andExpect(jsonPath("$.salary").value(5000.0));
 
-        mockMvc.perform(get("/v1/employees/{pathParameterId}"));
     }
 }
