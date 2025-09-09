@@ -22,7 +22,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
-    public Employee getEmployees(@PathVariable long id) {
+    public Employee getEmployeeById(@PathVariable long id) {
         return employees.stream().filter(employee -> employee.getId() == id).findFirst().orElse(null);
     }
 

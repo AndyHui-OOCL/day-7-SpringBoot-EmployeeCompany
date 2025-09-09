@@ -1,6 +1,5 @@
 package org.example.demo;
 
-import org.example.demo.controller.Employee;
 import org.example.demo.controller.EmployeeController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
