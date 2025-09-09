@@ -214,4 +214,89 @@ public class EmployeeControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
+
+    @Test
+    void should_return_paginated_result_when_getEmployee_given_page_and_size() throws Exception {
+        String requestBody1 = """
+                {
+                    "name": "John Smith1",
+                    "age": 34,
+                    "salary": 5000.0,
+                    "gender": "Male"
+                }
+                """;
+        mockMvc.perform(post("/v1/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody1));
+
+        String requestBody2 = """
+                {
+                    "name": "John Smith2",
+                    "age": 34,
+                    "salary": 5000.0,
+                    "gender": "Male"
+                }
+                """;
+        mockMvc.perform(post("/v1/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody2));
+
+        String requestBody3 = """
+                {
+                    "name": "John Smith3",
+                    "age": 34,
+                    "salary": 5000.0,
+                    "gender": "Male"
+                }
+                """;
+        mockMvc.perform(post("/v1/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody3));
+
+        String requestBody4 = """
+                {
+                    "name": "John Smith4",
+                    "age": 34,
+                    "salary": 5000.0,
+                    "gender": "Male"
+                }
+                """;
+        mockMvc.perform(post("/v1/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody4));
+
+        String requestBody5 = """
+                {
+                    "name": "John Smith5",
+                    "age": 34,
+                    "salary": 5000.0,
+                    "gender": "Male"
+                }
+                """;
+        mockMvc.perform(post("/v1/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody5));
+
+        String requestBody6 = """
+                {
+                    "name": "John Smith6",
+                    "age": 34,
+                    "salary": 5000.0,
+                    "gender": "Male"
+                }
+                """;
+        mockMvc.perform(post("/v1/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody6));
+
+        mockMvc.perform(get("/v1/employees?page=1&size=5")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(5))
+                .andExpect(jsonPath("$[0].name").value("John Smith2"))
+                .andExpect(jsonPath("$[1].name").value("John Smith3"))
+                .andExpect(jsonPath("$[2].name").value("John Smith4"))
+                .andExpect(jsonPath("$[3].name").value("John Smith5"))
+                .andExpect(jsonPath("$[4].name").value("John Smith6"));
+    }
 }
