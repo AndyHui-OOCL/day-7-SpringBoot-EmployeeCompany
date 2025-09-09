@@ -42,4 +42,9 @@ public class CompanyController {
         companies.remove(targetCompany);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
+
+    @GetMapping(params = {"page", "size"})
+    public List<Company> queryCompaniesWithPagination(@RequestParam int page, @RequestParam int size) {
+        return companies.stream().skip(page).limit(size).toList();
+    }
 }

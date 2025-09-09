@@ -137,4 +137,72 @@ public class CompanyControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
+
+    @Test
+    void should_return_paginated_result_when_getCompanies_given_page_and_size() throws Exception {
+        String requestBody1 = """
+                {
+                    "name": "Apple1"
+                }
+                """;
+
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody1));
+
+        String requestBody2 = """
+                {
+                    "name": "Apple2"
+                }
+                """;
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody2));
+
+        String requestBody3 = """
+                {
+                    "name": "Apple3"
+                }
+                """;
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody3));
+
+        String requestBody4 = """
+                {
+                    "name": "Apple4"
+                }
+                """;
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody4));
+
+        String requestBody5 = """
+                {
+                    "name": "Apple5"
+                }
+                """;
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody5));
+
+        String requestBody6 = """
+                {
+                    "name": "Apple6"
+                }
+                """;
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody6));
+
+        mockMvc.perform(get("/v1/companies?page=1&size=5")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(5))
+                .andExpect(jsonPath("$[0].name").value("Apple2"))
+                .andExpect(jsonPath("$[1].name").value("Apple3"))
+                .andExpect(jsonPath("$[2].name").value("Apple4"))
+                .andExpect(jsonPath("$[3].name").value("Apple5"))
+                .andExpect(jsonPath("$[4].name").value("Apple6"));
+    }
 }
