@@ -1,0 +1,9 @@
+package org.example.demo.entity;
+
+public class ParkingBoy {
+
+}
+
+class ParkingBoyTable {
+
+}
