@@ -35,4 +35,11 @@ public class CompanyController {
         targetCompany.setName(companyUpdate.getName());
         return targetCompany;
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Company> deleteCompanyById(@PathVariable long id) {
+        Company targetCompany = companies.stream().filter(company -> company.getId() == id).findFirst().orElse(null);
+        companies.remove(targetCompany);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    }
 }

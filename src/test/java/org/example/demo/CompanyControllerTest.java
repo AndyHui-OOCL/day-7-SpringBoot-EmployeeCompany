@@ -99,7 +99,7 @@ public class CompanyControllerTest {
     }
 
     @Test
-    void should_update_name_when_update_given_valid_id() throws Exception {
+    void should_update_company_name_when_update_given_valid_id() throws Exception {
         String requestBody = """
                 {
                     "name": "Apple"
@@ -117,7 +117,24 @@ public class CompanyControllerTest {
         mockMvc.perform(put("/v1/companies/{id}", 1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(updateBody))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("XiaoMi"));
+    }
+
+    @Test
+    void should_delete_company_when_delete_given_valid_id() throws Exception {
+        String requestBody = """
+                {
+                    "name": "Apple"
+                }
+                """;
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody));
+
+        mockMvc.perform(delete("/v1/companies/{id}", 1)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
     }
 }
