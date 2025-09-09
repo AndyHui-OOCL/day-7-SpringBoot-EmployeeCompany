@@ -149,7 +149,7 @@ public class EmployeeControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(femaleEmployeeJson));
 
-        mockMvc.perform(get("/v1/employees/all")
+        mockMvc.perform(get("/v1/employees")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))

@@ -31,7 +31,7 @@ public class EmployeeController {
         return employees.stream().filter(employee -> employee.getGender().equals(gender)).toList();
     }
 
-    @GetMapping("/all")
+    @GetMapping()
     public List<Employee> getEmployeeList() {
         return employees;
     }
