@@ -47,4 +47,23 @@ public class EmployeeControllerTest {
                 .andExpect(jsonPath("$.salary").value(5000.0));
 
     }
+
+    @Test
+    void should_get_male_employee_when_get_given_male_query() throws Exception {
+        mockMvc.perform(get("/v1/employees?gender=Male")
+                    .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].name").value("John Smith"))
+                .andExpect(jsonPath("$[0].age").value(34))
+                .andExpect(jsonPath("$[0].gender").value("Male"))
+                .andExpect(jsonPath("$[0].salary").value(5000.0));
+    }
+
+    @Test
+    void should_get_no_employee_when_get_give_female_query() throws Exception {
+        mockMvc.perform(get("/v1/employees?gender=Female")
+                    .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()").value(0));
+    }
 }
