@@ -8,8 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -75,7 +74,7 @@ public class EmployeeControllerTest {
                     "name": "Mary",
                     "age": 31,
                     "salary": 5000.0,
-                    "gender": "Feale"
+                    "gender": "Female"
                 }
                 """;
         mockMvc.perform(post("/v1/employees")
@@ -85,5 +84,23 @@ public class EmployeeControllerTest {
         mockMvc.perform(get("/v1/employees/all")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()").value(2));
+    }
+
+    @Test
+    void should_update_age_and_salary_when_update_given_valid_id() throws Exception {
+        String requestBody = """
+            {
+                "age": 30,
+                "salary": 10000.0
+            }
+            """;
+        mockMvc.perform(put("/v1/employees/{id}", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("John Smith"))
+                .andExpect(jsonPath("$.age").value(30))
+                .andExpect(jsonPath("$.salary").value(10000.0))
+                .andExpect(jsonPath("$.gender").value("Male"));
     }
 }
