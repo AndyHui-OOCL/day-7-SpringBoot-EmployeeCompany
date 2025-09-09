@@ -1,5 +1,6 @@
 package org.example.demo;
 
+import org.example.demo.controller.Employee;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -61,9 +62,28 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    void should_get_no_employee_when_get_give_female_query() throws Exception {
+    void should_get_no_employee_when_get_given_female_query() throws Exception {
         mockMvc.perform(get("/v1/employees?gender=Female")
                     .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()").value(0));
+    }
+
+    @Test
+    void should_get_all_employee_when_getAll_given_2_employee() throws Exception {
+        String requestBody = """
+                {
+                    "name": "Mary",
+                    "age": 31,
+                    "salary": 5000.0,
+                    "gender": "Feale"
+                }
+                """;
+        mockMvc.perform(post("/v1/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody));
+
+        mockMvc.perform(get("/v1/employees/all")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()").value(2));
     }
 }

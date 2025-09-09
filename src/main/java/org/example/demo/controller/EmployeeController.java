@@ -29,4 +29,17 @@ public class EmployeeController {
     public List<Employee> queryEmployeeByGender(@RequestParam String gender) {
         return employees.stream().filter(employee -> employee.getGender().equals(gender)).toList();
     }
+
+    @GetMapping("/all")
+    public List<Employee> getEmployeeList() {
+        return employees;
+    }
+
+    @PutMapping("/{id}")
+    public Employee updateEmployeeAgeAndSalary(@PathVariable long id, @RequestBody Employee employeeUpdate) {
+        Employee targetEmployee = employees.stream().filter(employee -> employee.getId() == id).findFirst().orElse(null);;
+        targetEmployee.setAge(employeeUpdate.getAge());
+        targetEmployee.setSalary(employeeUpdate.getSalary());
+        return targetEmployee;
+    }
 }
