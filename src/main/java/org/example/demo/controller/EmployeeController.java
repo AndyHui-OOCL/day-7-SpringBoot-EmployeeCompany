@@ -12,10 +12,11 @@ import java.util.Map;
 @RequestMapping("/v1/employees")
 public class EmployeeController {
     private List<Employee> employees = new ArrayList<>();
+    private static long idCounter = 0;
 
     @PostMapping
     public ResponseEntity<Map<String, Object>> createEmployee(@RequestBody Employee employee) {
-        employee.setId(employees.size() + 1);
+        employee.setId(++idCounter);
         employees.add(employee);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("id", employee.getId()));
     }
@@ -41,5 +42,12 @@ public class EmployeeController {
         targetEmployee.setAge(employeeUpdate.getAge());
         targetEmployee.setSalary(employeeUpdate.getSalary());
         return targetEmployee;
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Employee> deleteEmployeeById(@PathVariable long id) {
+        Employee targetEmployee = employees.stream().filter(employee -> employee.getId() == id).findFirst().orElse(null);
+        employees.remove(targetEmployee);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 }

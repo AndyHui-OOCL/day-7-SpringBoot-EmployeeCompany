@@ -64,6 +64,7 @@ public class EmployeeControllerTest {
     void should_get_no_employee_when_get_given_female_query() throws Exception {
         mockMvc.perform(get("/v1/employees?gender=Female")
                     .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(0));
     }
 
@@ -83,6 +84,7 @@ public class EmployeeControllerTest {
 
         mockMvc.perform(get("/v1/employees/all")
                 .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2));
     }
 
@@ -97,10 +99,18 @@ public class EmployeeControllerTest {
         mockMvc.perform(put("/v1/employees/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("John Smith"))
                 .andExpect(jsonPath("$.age").value(30))
                 .andExpect(jsonPath("$.salary").value(10000.0))
                 .andExpect(jsonPath("$.gender").value("Male"));
+    }
+
+    @Test
+    void should_delete_employee_when_delete_given_valid_id() throws Exception {
+        mockMvc.perform(delete("/v1/employees/{id}", 2)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
     }
 }
