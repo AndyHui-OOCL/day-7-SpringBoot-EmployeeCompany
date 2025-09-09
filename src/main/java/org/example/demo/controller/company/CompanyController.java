@@ -28,4 +28,11 @@ public class CompanyController {
 
     @GetMapping
     public List<Company> getAllCompanies() {return companies;}
+
+    @PutMapping("/{id}")
+    public Company updateCompanyName(@PathVariable long id, @RequestBody Company companyUpdate) {
+        Company targetCompany = companies.stream().filter(company -> company.getId() == id).findFirst().orElse(null);
+        targetCompany.setName(companyUpdate.getName());
+        return targetCompany;
+    }
 }

@@ -97,4 +97,27 @@ public class CompanyControllerTest {
                 .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(jsonPath("$[1].name").value("XiaoMi"));
     }
+
+    @Test
+    void should_update_name_when_update_given_valid_id() throws Exception {
+        String requestBody = """
+                {
+                    "name": "Apple"
+                }
+                """;
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody));
+
+        String updateBody = """
+                {
+                    "name": "XiaoMi"
+                }
+                """;
+        mockMvc.perform(put("/v1/companies/{id}", 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(updateBody))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("XiaoMi"));
+    }
 }
