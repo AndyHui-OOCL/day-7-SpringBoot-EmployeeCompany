@@ -11,7 +11,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/v1/companies")
 public class CompanyController {
-    private List<Company> companies = new ArrayList<>();
+    private final List<Company> companies = new ArrayList<>();
     private static long idCounter = 0;
 
     @PostMapping
@@ -25,4 +25,7 @@ public class CompanyController {
     public Company getCompanyById(@PathVariable long id) {
         return companies.stream().filter(company -> company.getId() == id).findFirst().orElse(null);
     }
+
+    @GetMapping
+    public List<Company> getAllCompanies() {return companies;}
 }

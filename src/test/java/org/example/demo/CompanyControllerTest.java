@@ -67,4 +67,34 @@ public class CompanyControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Apple"));
     }
+
+    @Test
+    void should_get_all_companies_when_get_given_given_no_parameter() throws Exception {
+        String requestBody1 = """
+                {
+                    "name": "Apple"
+                }
+                """;
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody1));
+
+        String requestBody = """
+                {
+                    "name": "XiaoMi"
+                }
+                """;
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody));
+
+        mockMvc.perform(get("/v1/companies")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].name").value("Apple"))
+                .andExpect(jsonPath("$[1].id").value(2))
+                .andExpect(jsonPath("$[1].name").value("XiaoMi"));
+    }
 }
