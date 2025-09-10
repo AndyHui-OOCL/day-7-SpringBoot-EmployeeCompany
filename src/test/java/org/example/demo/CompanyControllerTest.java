@@ -1,6 +1,7 @@
 package org.example.demo;
 
 import org.example.demo.controller.company.CompanyController;
+import org.example.demo.service.CompanyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +26,16 @@ public class CompanyControllerTest {
     @Autowired
     private CompanyController companyController;
 
+    @Autowired
+    private CompanyService companyService;
+
     @BeforeEach
     void setUp() throws Exception {
-        Field companiesField = CompanyController.class.getDeclaredField("companies");
+        Field companiesField = CompanyService.class.getDeclaredField("companies");
         companiesField.setAccessible(true);
-        companiesField.set(companyController, new ArrayList<>());
+        companiesField.set(companyService, new ArrayList<>());
 
-        Field idCounterField = CompanyController.class.getDeclaredField("idCounter");
+        Field idCounterField = CompanyService.class.getDeclaredField("idCounter");
         idCounterField.setAccessible(true);
         idCounterField.setLong(null, 0L);
     }

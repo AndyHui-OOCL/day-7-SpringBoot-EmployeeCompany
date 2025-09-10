@@ -15,14 +15,18 @@ public class EmployeeService {
     private final List<Employee> employees = new ArrayList<>();
     private static long idCounter = 0;
 
-    public Map<String, Long> createEmployee(Employee employee) {
+    public ResponseEntity<Map<String, Long>> createEmployee(Employee employee) {
         employee.setId(++idCounter);
         employees.add(employee);
-        return Map.of("id", employee.getId());
+        return  ResponseEntity.status(HttpStatus.CREATED).body(Map.of("id", employee.getId()));
     }
 
-    public Employee getEmployeeById(long id) {
-        return employees.stream().filter(employee -> employee.getId() == id).findFirst().orElse(null);
+    public ResponseEntity<Employee> getEmployeeById(long id) {
+        Employee targetEmployee =  employees.stream().filter(employee -> employee.getId() == id).findFirst().orElse(null);
+        if(targetEmployee == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(targetEmployee);
     }
 
     public List<Employee> queryEmployeeByGender(@RequestParam String gender) {
@@ -33,39 +37,28 @@ public class EmployeeService {
         return employees;
     }
 
-    public Employee updateEmployeeAgeAndSalary(long id, Employee employeeUpdate) {
+    public ResponseEntity<Employee> updateEmployeeAgeAndSalary(long id, Employee employeeUpdate) {
         Employee targetEmployee = employees.stream().filter(employee -> employee.getId() == id).findFirst().orElse(null);
         if(targetEmployee == null) {
-            return null;
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         targetEmployee.setAge(employeeUpdate.getAge());
         targetEmployee.setSalary(employeeUpdate.getSalary());
         targetEmployee.setName(employeeUpdate.getName());
         targetEmployee.setGender(employeeUpdate.getGender());
-        return targetEmployee;
+        return ResponseEntity.status(HttpStatus.OK).body(targetEmployee);
     }
 
-    public void deleteEmployeeById(long id) {
+    public ResponseEntity<Void> deleteEmployeeById(long id) {
         Employee targetEmployee = employees.stream().filter(employee -> employee.getId() == id).findFirst().orElse(null);
         employees.remove(targetEmployee);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
-    public List<Employee> queryEmployeesWithPagination(int page, int size) {
+    public ResponseEntity<List<Employee>> queryEmployeesWithPagination(int page, int size) {
         if(size < 1 || page < 0) {
-            return null;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-        return employees.stream().skip(page).limit(size).toList();
-    }
-
-    public List<Employee> getEmployees() {
-        return employees;
-    }
-
-    public void clearEmployees() {
-        employees.clear();
-    }
-
-    public void resetIdCounter() {
-        idCounter = 0;
+        return ResponseEntity.status(HttpStatus.OK).body(employees.stream().skip(page).limit(size).toList());
     }
 }

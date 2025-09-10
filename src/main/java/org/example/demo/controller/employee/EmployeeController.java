@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,14 +17,12 @@ public class EmployeeController {
 
     @PostMapping
     public ResponseEntity<Map<String, Long>> createEmployee(@RequestBody Employee employee) {
-        Map<String, Long> result = employeeService.createEmployee(employee);
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+        return employeeService.createEmployee(employee);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable long id) {
-        Employee targetEmployee = employeeService.getEmployeeById(id);
-        return targetEmployee != null ? ResponseEntity.status(HttpStatus.OK).body(targetEmployee) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        return employeeService.getEmployeeById(id);
     }
 
     @GetMapping(params = "gender")
@@ -40,19 +37,16 @@ public class EmployeeController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Employee> updateEmployeeAgeAndSalary(@PathVariable long id, @RequestBody Employee employeeUpdate) {
-        Employee result = employeeService.updateEmployeeAgeAndSalary(id, employeeUpdate);
-        return result != null ? ResponseEntity.status(HttpStatus.OK).body(result) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        return employeeService.updateEmployeeAgeAndSalary(id, employeeUpdate);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmployeeById(@PathVariable long id) {
-        employeeService.deleteEmployeeById(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        return employeeService.deleteEmployeeById(id);
     }
 
     @GetMapping(params = {"page", "size"})
     public ResponseEntity<List<Employee>> queryEmployeesWithPagination(@RequestParam int page, @RequestParam int size) {
-        List<Employee> result = employeeService.queryEmployeesWithPagination(page,size);
-        return result != null ? ResponseEntity.status(HttpStatus.OK).body(result) : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        return employeeService.queryEmployeesWithPagination(page,size);
     }
 }

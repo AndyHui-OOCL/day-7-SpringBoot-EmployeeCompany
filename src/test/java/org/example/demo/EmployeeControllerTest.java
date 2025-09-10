@@ -1,6 +1,7 @@
 package org.example.demo;
 
 import org.example.demo.controller.employee.EmployeeController;
+import org.example.demo.service.CompanyService;
 import org.example.demo.service.EmployeeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,8 +31,13 @@ public class EmployeeControllerTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        employeeService.clearEmployees();
-        employeeService.resetIdCounter();
+        Field companiesField = EmployeeService.class.getDeclaredField("employees");
+        companiesField.setAccessible(true);
+        companiesField.set(employeeService, new ArrayList<>());
+
+        Field idCounterField = EmployeeService.class.getDeclaredField("idCounter");
+        idCounterField.setAccessible(true);
+        idCounterField.setLong(null, 0L);
     }
 
     @Test
