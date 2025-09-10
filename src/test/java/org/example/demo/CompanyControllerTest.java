@@ -235,4 +235,128 @@ public class CompanyControllerTest {
                 .andExpect(jsonPath("$[3].name").value("Apple5"))
                 .andExpect(jsonPath("$[4].name").value("Apple6"));
     }
+
+    @Test
+    void should_throw_error_when_getCompanies_given_invalid_page_number() throws Exception {
+        String requestBody1 = """
+                {
+                    "name": "Apple1"
+                }
+                """;
+
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody1));
+
+        String requestBody2 = """
+                {
+                    "name": "Apple2"
+                }
+                """;
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody2));
+
+        String requestBody3 = """
+                {
+                    "name": "Apple3"
+                }
+                """;
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody3));
+
+        String requestBody4 = """
+                {
+                    "name": "Apple4"
+                }
+                """;
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody4));
+
+        String requestBody5 = """
+                {
+                    "name": "Apple5"
+                }
+                """;
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody5));
+
+        String requestBody6 = """
+                {
+                    "name": "Apple6"
+                }
+                """;
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody6));
+
+        mockMvc.perform(get("/v1/companies?page=-1&size=5")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void should_throw_error_when_getCompanies_given_invalid_size_number() throws Exception {
+        String requestBody1 = """
+                {
+                    "name": "Apple1"
+                }
+                """;
+
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody1));
+
+        String requestBody2 = """
+                {
+                    "name": "Apple2"
+                }
+                """;
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody2));
+
+        String requestBody3 = """
+                {
+                    "name": "Apple3"
+                }
+                """;
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody3));
+
+        String requestBody4 = """
+                {
+                    "name": "Apple4"
+                }
+                """;
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody4));
+
+        String requestBody5 = """
+                {
+                    "name": "Apple5"
+                }
+                """;
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody5));
+
+        String requestBody6 = """
+                {
+                    "name": "Apple6"
+                }
+                """;
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody6));
+
+        mockMvc.perform(get("/v1/companies?page=1&size=0")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
 }

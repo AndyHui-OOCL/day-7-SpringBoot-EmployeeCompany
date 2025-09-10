@@ -40,7 +40,7 @@ public class CompanyService {
 
     public List<Company> queryCompaniesWithPagination(int page, int size) {
         if(size < 1 || page < 0) {
-            return null;
+            throw new InvalidPaginationNumberException("Page number should be large than 0 and size should be larger than 1");
         }
         return companyRepository.findCompaniesWithPagination(page, size);
     }
