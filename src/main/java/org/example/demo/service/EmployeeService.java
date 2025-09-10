@@ -53,7 +53,11 @@ public class EmployeeService {
     }
 
     public Employee deleteEmployeeById(long id) {
-        return employeeRepository.deleteEmployeeById(id);
+        Employee result = employeeRepository.deleteEmployeeById(id);
+        if (result == null) {
+            throw new EmployeeNotFoundException();
+        }
+        return result;
     }
 
     public List<Employee> queryEmployeesWithPagination(int page, int size) {

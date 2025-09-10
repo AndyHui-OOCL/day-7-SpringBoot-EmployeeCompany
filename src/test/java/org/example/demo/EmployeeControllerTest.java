@@ -309,6 +309,14 @@ public class EmployeeControllerTest {
     }
 
     @Test
+    void should_delete_employee_when_delete_given_invalid_id() throws Exception {
+
+        mockMvc.perform(delete("/v1/employees/{id}", 1)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void should_return_paginated_result_when_getEmployee_given_page_and_size() throws Exception {
         String requestBody1 = """
                 {

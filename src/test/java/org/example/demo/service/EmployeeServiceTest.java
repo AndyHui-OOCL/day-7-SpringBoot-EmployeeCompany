@@ -120,7 +120,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void should_delete_employee_when_delete_given_valid_employee_id() {
+    void should_set_status_false_when_delete_given_valid_employee_id() {
         Employee mockEmployee = new Employee();
         mockEmployee.setId(1);
         mockEmployee.setName("Tom");
@@ -138,6 +138,14 @@ class EmployeeServiceTest {
         assertEquals(mockEmployee.getGender(), result.getGender());
         assertEquals(mockEmployee.getAge(), result.getAge());
         assertFalse(mockEmployee.getStatus());
+        verify(employeeRepository, times(1)).deleteEmployeeById(1);
+    }
+
+    @Test
+    void should_throw_exception_when_delete_when_given_invalid_employee_id() {
+        when(employeeRepository.deleteEmployeeById(1)).thenReturn(null);
+
+        assertThrows(EmployeeNotFoundException.class, () -> employeeService.deleteEmployeeById(1));
         verify(employeeRepository, times(1)).deleteEmployeeById(1);
     }
 }
