@@ -126,7 +126,7 @@ class EmployeeServiceTest {
         mockEmployee.setName("Tom");
         mockEmployee.setAge(66);
         mockEmployee.setGender("Male");
-        mockEmployee.setSalary(1000.0);
+        mockEmployee.setSalary(10000.0);
         mockEmployee.setStatus(false);
 
         when(employeeRepository.deleteEmployeeById(1)).thenReturn(mockEmployee);
@@ -142,10 +142,43 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void should_throw_exception_when_delete_when_given_invalid_employee_id() {
+    void should_throw_exception_when_delete_given_invalid_employee_id() {
         when(employeeRepository.deleteEmployeeById(1)).thenReturn(null);
 
         assertThrows(EmployeeNotFoundException.class, () -> employeeService.deleteEmployeeById(1));
         verify(employeeRepository, times(1)).deleteEmployeeById(1);
+    }
+
+    @Test
+    void should_update_employee_when_update_given_employee_is_active() {
+        Employee mockEmployee = new Employee();
+        mockEmployee.setId(1);
+        mockEmployee.setName("Tom");
+        mockEmployee.setAge(66);
+        mockEmployee.setGender("Male");
+        mockEmployee.setSalary(20000.0);
+        mockEmployee.setStatus(true);
+
+        Employee updatedEmployee = new Employee();
+        updatedEmployee.setId(1);
+        updatedEmployee.setAge(67);
+        updatedEmployee.setName("Tom");
+        updatedEmployee.setGender("Male");
+        updatedEmployee.setSalary(21000.0);
+        updatedEmployee.setStatus(true);
+
+        when(employeeRepository.findEmployeeById(1)).thenReturn(mockEmployee);
+        when(employeeRepository.updateEmployee(mockEmployee, updatedEmployee)).thenReturn(updatedEmployee);
+
+        Employee result = employeeService.updateEmployeeInformation(1, updatedEmployee);
+        assertEquals(updatedEmployee.getAge(), result.getAge());
+        assertEquals(updatedEmployee.getId(), result.getId());
+        assertEquals(updatedEmployee.getGender(), result.getGender());
+        assertEquals(updatedEmployee.getName(), result.getName());
+        assertEquals(updatedEmployee.getId(), result.getId());
+        assertTrue(updatedEmployee.getStatus());
+
+        verify(employeeRepository, times(1)).findEmployeeById(1);
+        verify(employeeRepository, times(1)).updateEmployee(mockEmployee, updatedEmployee);
     }
 }
