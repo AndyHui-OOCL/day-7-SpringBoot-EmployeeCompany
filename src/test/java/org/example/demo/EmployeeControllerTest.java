@@ -2,7 +2,6 @@ package org.example.demo;
 
 import org.example.demo.controller.employee.EmployeeController;
 import org.example.demo.repository.EmployeeRepository;
-import org.example.demo.service.CompanyService;
 import org.example.demo.service.EmployeeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -100,6 +99,26 @@ public class EmployeeControllerTest {
                 .andExpect(jsonPath("$.gender").value("Male"))
                 .andExpect(jsonPath("$.salary").value(5000.0));
 
+    }
+
+    @Test
+    void should_receive_not_found_when_get_given_invalid_employee_id() throws Exception {
+        String requestBody = """
+                {
+                    "name": "John Smith",
+                    "age": 34,
+                    "salary": 5000.0,
+                    "gender": "Male"
+                }
+                """;
+        mockMvc.perform(post("/v1/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody));
+
+
+        mockMvc.perform(get("/v1/employees/{id}", 2)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test

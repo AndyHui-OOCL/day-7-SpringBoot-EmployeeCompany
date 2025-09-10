@@ -23,7 +23,11 @@ public class EmployeeService {
     }
 
     public Employee getEmployeeById(long id) {
-        return employeeRepository.findEmployeeById(id);
+        Employee result = employeeRepository.findEmployeeById(id);
+        if(result == null) {
+            throw new EmployeeNotFoundException();
+        }
+        return result;
     }
 
     public List<Employee> queryEmployeeByGender(@RequestParam String gender) {

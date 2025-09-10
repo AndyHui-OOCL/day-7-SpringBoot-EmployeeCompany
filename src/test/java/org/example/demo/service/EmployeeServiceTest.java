@@ -6,9 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 class EmployeeServiceTest {
@@ -19,7 +21,7 @@ class EmployeeServiceTest {
     private EmployeeService employeeService;
 
     @Test
-    void should_not_create_employee_when_post_given_employee_age_below_18() {
+    void should_throw_error_when_post_given_employee_age_below_18() {
         Employee mockEmployee = new Employee();
         mockEmployee.setName("Tom");
         mockEmployee.setAge(12);
@@ -27,10 +29,11 @@ class EmployeeServiceTest {
         mockEmployee.setSalary(1000.0);
 
         assertThrows(EmployeeNotWithinLegalAgeException.class, () -> employeeService.createEmployee(mockEmployee));
+        verify(employeeRepository, never()).insertEmployee(mockEmployee);
     }
 
     @Test
-    void should_not_create_employee_when_post_given_employee_age_above_65() {
+    void should_throw_error_when_post_given_employee_age_above_65() {
         Employee mockEmployee = new Employee();
         mockEmployee.setName("Tom");
         mockEmployee.setAge(66);
@@ -38,6 +41,34 @@ class EmployeeServiceTest {
         mockEmployee.setSalary(1000.0);
 
         assertThrows(EmployeeNotWithinLegalAgeException.class, () -> employeeService.createEmployee(mockEmployee));
+        verify(employeeRepository, never()).insertEmployee(mockEmployee);
     }
 
+    @Test
+    void should_throw_error_when_get_given_invalid_id() {
+        when(employeeRepository.findEmployeeById(anyLong())).thenReturn(null);
+
+        assertThrows(EmployeeNotFoundException.class, () -> employeeService.getEmployeeById(1));
+        verify(employeeRepository, times(1)).findEmployeeById(1);
+    }
+
+    @Test
+    void should_get_employee_when_get_given_valid_id() {
+        Employee mockEmployee = new Employee();
+        mockEmployee.setId(1);
+        mockEmployee.setName("Tom");
+        mockEmployee.setAge(66);
+        mockEmployee.setGender("Male");
+        mockEmployee.setSalary(1000.0);
+
+        when(employeeRepository.findEmployeeById(1)).thenReturn(mockEmployee);
+
+        Employee resultEmployee = employeeService.getEmployeeById(1);
+        assertEquals(1, resultEmployee.getId());
+        assertEquals(mockEmployee.getAge(), resultEmployee.getAge());
+        assertEquals(mockEmployee.getSalary(), resultEmployee.getSalary());
+        assertEquals(mockEmployee.getGender(), resultEmployee.getGender());
+        assertEquals(mockEmployee.getName(), resultEmployee.getName());
+        verify(employeeRepository, times(1)).findEmployeeById(1);
+    }
 }
