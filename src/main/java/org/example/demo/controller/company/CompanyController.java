@@ -1,5 +1,6 @@
 package org.example.demo.controller.company;
 
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,29 +23,39 @@ public class CompanyController {
     }
 
     @GetMapping("/{id}")
-    public Company getCompanyById(@PathVariable long id) {
-        return companies.stream().filter(company -> company.getId() == id).findFirst().orElse(null);
-    }
+    public ResponseEntity<Company> getCompanyById(@PathVariable long id) {
+        Company targetCompany = companies.stream().filter(company -> company.getId() == id).findFirst().orElse(null);
+        return targetCompany != null ? ResponseEntity.status(HttpStatus.OK).body(targetCompany) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+     }
 
     @GetMapping
     public List<Company> getAllCompanies() {return companies;}
 
     @PutMapping("/{id}")
-    public Company updateCompanyName(@PathVariable long id, @RequestBody Company companyUpdate) {
+    public ResponseEntity<Company> updateCompanyName(@PathVariable long id, @RequestBody Company companyUpdate) {
         Company targetCompany = companies.stream().filter(company -> company.getId() == id).findFirst().orElse(null);
+        if(targetCompany == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
         targetCompany.setName(companyUpdate.getName());
-        return targetCompany;
+        return ResponseEntity.status(HttpStatus.OK).body(targetCompany);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Company> deleteCompanyById(@PathVariable long id) {
         Company targetCompany = companies.stream().filter(company -> company.getId() == id).findFirst().orElse(null);
+        if(targetCompany == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
         companies.remove(targetCompany);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
     @GetMapping(params = {"page", "size"})
-    public List<Company> queryCompaniesWithPagination(@RequestParam int page, @RequestParam int size) {
-        return companies.stream().skip(page).limit(size).toList();
+    public ResponseEntity<List<Company>> queryCompaniesWithPagination(@RequestParam int page, @RequestParam int size) {
+        if(size < 1 || page < 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(companies.stream().skip(page).limit(size).toList());
     }
 }
