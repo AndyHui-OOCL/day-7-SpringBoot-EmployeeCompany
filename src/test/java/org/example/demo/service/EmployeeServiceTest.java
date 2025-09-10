@@ -181,4 +181,31 @@ class EmployeeServiceTest {
         verify(employeeRepository, times(1)).findEmployeeById(1);
         verify(employeeRepository, times(1)).updateEmployee(mockEmployee, updatedEmployee);
     }
+
+    @Test
+    void should_throw_error_when_update_given_employee_is_not_active() {
+        Employee mockEmployee = new Employee();
+        mockEmployee.setId(1);
+        mockEmployee.setName("Tom");
+        mockEmployee.setAge(66);
+        mockEmployee.setGender("Male");
+        mockEmployee.setSalary(20000.0);
+        mockEmployee.setStatus(false);
+
+        Employee updatedEmployee = new Employee();
+        updatedEmployee.setId(1);
+        updatedEmployee.setAge(67);
+        updatedEmployee.setName("Tom");
+        updatedEmployee.setGender("Male");
+        updatedEmployee.setSalary(21000.0);
+        updatedEmployee.setStatus(true);
+
+        when(employeeRepository.findEmployeeById(1)).thenReturn(mockEmployee);
+        when(employeeRepository.updateEmployee(mockEmployee, updatedEmployee)).thenReturn(null);
+
+        assertThrows(EmployeeInactiveException.class, () -> employeeService.updateEmployeeInformation(1, updatedEmployee));
+
+        verify(employeeRepository, times(1)).findEmployeeById(1);
+        verify(employeeRepository, times(0)).updateEmployee(mockEmployee, updatedEmployee);
+    }
 }

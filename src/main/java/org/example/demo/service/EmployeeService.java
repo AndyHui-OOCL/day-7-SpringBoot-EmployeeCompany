@@ -31,7 +31,7 @@ public class EmployeeService {
     public Employee getEmployeeById(long id) {
         Employee result = employeeRepository.findEmployeeById(id);
         if(result == null) {
-            throw new EmployeeNotFoundException();
+            throw new EmployeeNotFoundException(String.format("Employee with id %d is not found", id));
         }
         return result;
     }
@@ -47,7 +47,10 @@ public class EmployeeService {
     public Employee updateEmployeeInformation(long id, Employee employeeUpdate) {
         Employee targetEmployee = employeeRepository.findEmployeeById(id);
         if(targetEmployee == null) {
-            return null;
+            throw new EmployeeNotFoundException(String.format("Employee with id %d is not found", id));
+        }
+        if(!targetEmployee.getStatus()) {
+            throw new EmployeeInactiveException("The specified employee is inactive");
         }
         return employeeRepository.updateEmployee(targetEmployee, employeeUpdate);
     }
@@ -55,7 +58,7 @@ public class EmployeeService {
     public Employee deleteEmployeeById(long id) {
         Employee result = employeeRepository.deleteEmployeeById(id);
         if (result == null) {
-            throw new EmployeeNotFoundException();
+            throw new EmployeeNotFoundException(String.format("Employee with id: %d is not found", id));
         }
         return result;
     }
