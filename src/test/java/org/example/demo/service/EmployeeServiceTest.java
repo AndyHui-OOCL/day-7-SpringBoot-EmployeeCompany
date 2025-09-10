@@ -129,10 +129,15 @@ class EmployeeServiceTest {
         mockEmployee.setSalary(1000.0);
         mockEmployee.setStatus(false);
 
-        when(employeeRepository.deleteEmployeeById(1)).thenReturn(mockEmployee.getId());
+        when(employeeRepository.deleteEmployeeById(1)).thenReturn(mockEmployee);
 
-        Long resultId = employeeService.deleteEmployeeById(1);
-        assertEquals(mockEmployee.getId(), resultId);
+        Employee result = employeeService.deleteEmployeeById(1);
+        assertEquals(mockEmployee.getId(), result.getId());
+        assertEquals(mockEmployee.getName(), result.getName());
+        assertEquals(mockEmployee.getSalary(), result.getSalary());
+        assertEquals(mockEmployee.getGender(), result.getGender());
+        assertEquals(mockEmployee.getAge(), result.getAge());
         assertFalse(mockEmployee.getStatus());
+        verify(employeeRepository, times(1)).deleteEmployeeById(1);
     }
 }

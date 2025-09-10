@@ -52,7 +52,7 @@ public class EmployeeService {
         return employeeRepository.updateEmployee(targetEmployee, employeeUpdate);
     }
 
-    public long deleteEmployeeById(long id) {
+    public Employee deleteEmployeeById(long id) {
         return employeeRepository.deleteEmployeeById(id);
     }
 
