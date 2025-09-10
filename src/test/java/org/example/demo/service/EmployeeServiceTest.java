@@ -208,4 +208,23 @@ class EmployeeServiceTest {
         verify(employeeRepository, times(1)).findEmployeeById(1);
         verify(employeeRepository, times(0)).updateEmployee(mockEmployee, updatedEmployee);
     }
+
+    @Test
+    void should_throw_error_when_update_given_employee_does_not_exist() {
+        Employee updatedEmployee = new Employee();
+        updatedEmployee.setId(1);
+        updatedEmployee.setAge(67);
+        updatedEmployee.setName("Tom");
+        updatedEmployee.setGender("Male");
+        updatedEmployee.setSalary(21000.0);
+        updatedEmployee.setStatus(true);
+
+        when(employeeRepository.findEmployeeById(1)).thenReturn(null);
+        when(employeeRepository.updateEmployee(null, updatedEmployee)).thenReturn(null);
+
+        assertThrows(EmployeeNotFoundException.class, () -> employeeService.updateEmployeeInformation(1, updatedEmployee));
+
+        verify(employeeRepository, times(1)).findEmployeeById(1);
+        verify(employeeRepository, times(0)).updateEmployee(null, updatedEmployee);
+    }
 }

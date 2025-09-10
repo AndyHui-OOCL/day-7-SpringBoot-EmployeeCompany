@@ -322,6 +322,22 @@ public class EmployeeControllerTest {
     }
 
     @Test
+    void should_return_not_found_when_update_given_non_existing_user() throws Exception {
+        String updateBody = """
+            {
+                "name" : "John Smith",
+                "age": 30,
+                "salary": 25000.0,
+                "gender": "Male"
+            }
+            """;
+        mockMvc.perform(put("/v1/employees/{id}", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updateBody))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void should_delete_employee_when_delete_given_valid_id() throws Exception {
         String requestBody = """
                 {
