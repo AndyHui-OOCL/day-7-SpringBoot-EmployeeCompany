@@ -8,6 +8,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -44,7 +46,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void should_throw_error_when_create_given_employee_on_or_above_30_and_salary_below_30 () {
+    void should_throw_error_when_post_given_employee_on_or_above_30_and_salary_below_30 () {
         Employee mockEmployee = new Employee();
         mockEmployee.setName("Tom");
         mockEmployee.setAge(30);
@@ -53,6 +55,22 @@ class EmployeeServiceTest {
 
         assertThrows(InvalidEmployeeCreationCriteriaException.class, () -> employeeService.createEmployee(mockEmployee));
         verify(employeeRepository, never()).insertEmployee(mockEmployee);
+    }
+
+    @Test
+    void should_create_employee_with_status_true_when_post_given_valid_creation_criteria() {
+        Employee mockEmployee = new Employee();
+        mockEmployee.setId(1);
+        mockEmployee.setName("Tom");
+        mockEmployee.setAge(30);
+        mockEmployee.setGender("Male");
+        mockEmployee.setSalary(52000.0);
+        mockEmployee.setStatus(true);
+
+        Map<String, Long> result = employeeService.createEmployee(mockEmployee);
+        assertEquals(1, result.get("id"));
+        assertTrue(mockEmployee.getStatus());
+        verify(employeeRepository, times(1)).insertEmployee(mockEmployee);
     }
 
     @Test
@@ -71,15 +89,17 @@ class EmployeeServiceTest {
         mockEmployee.setAge(66);
         mockEmployee.setGender("Male");
         mockEmployee.setSalary(1000.0);
+        mockEmployee.setStatus(true);
 
         when(employeeRepository.findEmployeeById(1)).thenReturn(mockEmployee);
 
         Employee resultEmployee = employeeService.getEmployeeById(1);
-        assertEquals(1, resultEmployee.getId());
+        assertEquals(mockEmployee.getId(), resultEmployee.getId());
         assertEquals(mockEmployee.getAge(), resultEmployee.getAge());
         assertEquals(mockEmployee.getSalary(), resultEmployee.getSalary());
         assertEquals(mockEmployee.getGender(), resultEmployee.getGender());
         assertEquals(mockEmployee.getName(), resultEmployee.getName());
+        assertEquals(mockEmployee.getStatus(), resultEmployee.getStatus());
         verify(employeeRepository, times(1)).findEmployeeById(1);
     }
 }

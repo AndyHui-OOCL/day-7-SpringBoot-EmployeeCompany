@@ -13,6 +13,7 @@ public class EmployeeRepository {
 
     public void insertEmployee(Employee employee) {
         employee.setId(++idCounter);
+        employee.setStatus(true);
         employees.add(employee);
     }
 
