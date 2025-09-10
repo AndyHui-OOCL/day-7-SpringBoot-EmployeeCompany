@@ -1,28 +1,28 @@
 package org.example.demo.service;
 
 import org.example.demo.controller.employee.Employee;
+import org.example.demo.repository.EmployeeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Service
 public class EmployeeService {
-    private final List<Employee> employees = new ArrayList<>();
-    private static long idCounter = 0;
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     public ResponseEntity<Map<String, Long>> createEmployee(Employee employee) {
-        employee.setId(++idCounter);
-        employees.add(employee);
+        employeeRepository.insertEmployee(employee);
         return  ResponseEntity.status(HttpStatus.CREATED).body(Map.of("id", employee.getId()));
     }
 
     public ResponseEntity<Employee> getEmployeeById(long id) {
-        Employee targetEmployee =  employees.stream().filter(employee -> employee.getId() == id).findFirst().orElse(null);
+        Employee targetEmployee = employeeRepository.findEmployeeById(id);
         if(targetEmployee == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
@@ -30,28 +30,24 @@ public class EmployeeService {
     }
 
     public List<Employee> queryEmployeeByGender(@RequestParam String gender) {
-        return employees.stream().filter(employee -> employee.getGender().equals(gender)).toList();
+        return employeeRepository.findEmployeeByGender(gender);
     }
 
     public List<Employee> getAllEmployees() {
-        return employees;
+        return employeeRepository.findAllEmployee();
     }
 
     public ResponseEntity<Employee> updateEmployeeAgeAndSalary(long id, Employee employeeUpdate) {
-        Employee targetEmployee = employees.stream().filter(employee -> employee.getId() == id).findFirst().orElse(null);
+        Employee targetEmployee = employeeRepository.findEmployeeById(id);
         if(targetEmployee == null) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        targetEmployee.setAge(employeeUpdate.getAge());
-        targetEmployee.setSalary(employeeUpdate.getSalary());
-        targetEmployee.setName(employeeUpdate.getName());
-        targetEmployee.setGender(employeeUpdate.getGender());
-        return ResponseEntity.status(HttpStatus.OK).body(targetEmployee);
+        Employee updateResult = employeeRepository.updateEmployee(targetEmployee, employeeUpdate);
+        return ResponseEntity.status(HttpStatus.OK).body(updateResult);
     }
 
     public ResponseEntity<Void> deleteEmployeeById(long id) {
-        Employee targetEmployee = employees.stream().filter(employee -> employee.getId() == id).findFirst().orElse(null);
-        employees.remove(targetEmployee);
+        employeeRepository.deleteEmployeeById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
@@ -59,6 +55,6 @@ public class EmployeeService {
         if(size < 1 || page < 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(employees.stream().skip(page).limit(size).toList());
+        return ResponseEntity.status(HttpStatus.OK).body(employeeRepository.findEmployeeWithPagination(page, size));
     }
 }
