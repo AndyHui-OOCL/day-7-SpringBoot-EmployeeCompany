@@ -2,6 +2,7 @@ package org.example.demo.controller.company;
 
 import org.example.demo.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,12 +18,13 @@ public class CompanyController {
 
     @PostMapping
     public ResponseEntity<Map<String, Long>> createCompany(@RequestBody Company company) {
-        return companyService.createCompany(company);
+        return ResponseEntity.status(HttpStatus.CREATED).body(companyService.createCompany(company));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Company> getCompanyById(@PathVariable long id) {
-        return companyService.getCompanyById(id);
+        Company result = companyService.getCompanyById(id);
+        return result != null ? ResponseEntity.status(HttpStatus.OK).body(result) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
      }
 
     @GetMapping
@@ -30,16 +32,19 @@ public class CompanyController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Company> updateCompanyName(@PathVariable long id, @RequestBody Company companyUpdate) {
-        return companyService.updateCompanyName(id, companyUpdate);
+        Company result = companyService.updateCompanyName(id, companyUpdate);
+        return result != null ? ResponseEntity.status(HttpStatus.OK).body(result) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCompanyById(@PathVariable long id) {
-        return companyService.deleteCompanyById(id);
+        companyService.deleteCompanyById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
     @GetMapping(params = {"page", "size"})
     public ResponseEntity<List<Company>> queryCompaniesWithPagination(@RequestParam int page, @RequestParam int size) {
-        return companyService.queryCompaniesWithPagination(page, size);
+        List<Company> result = companyService.queryCompaniesWithPagination(page, size);
+        return result != null ? ResponseEntity.status(HttpStatus.OK).body(result) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 }
