@@ -46,7 +46,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void should_throw_error_when_post_given_employee_on_or_above_30_and_salary_below_30 () {
+    void should_throw_error_when_post_given_employee_on_or_above_30_and_salary_below_20000() {
         Employee mockEmployee = new Employee();
         mockEmployee.setName("Tom");
         mockEmployee.setAge(30);

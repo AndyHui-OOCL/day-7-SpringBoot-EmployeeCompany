@@ -21,7 +21,6 @@ public class CompanyRepository {
         return companies.stream().filter(company -> company.getId() == id).findFirst().orElse(null);
     }
 
-
     public List<Company> findAllCompanies() {
         return companies;
     }

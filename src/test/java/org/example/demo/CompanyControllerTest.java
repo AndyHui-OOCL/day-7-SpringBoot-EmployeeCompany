@@ -131,6 +131,28 @@ public class CompanyControllerTest {
     }
 
     @Test
+    void should_throw_error_when_update_given_invalid_id() throws Exception {
+        String requestBody = """
+                {
+                    "name": "Apple"
+                }
+                """;
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody));
+
+        String updateBody = """
+                {
+                    "name": "XiaoMi"
+                }
+                """;
+        mockMvc.perform(put("/v1/companies/{id}", 2)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updateBody))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void should_delete_company_when_delete_given_valid_id() throws Exception {
         String requestBody = """
                 {

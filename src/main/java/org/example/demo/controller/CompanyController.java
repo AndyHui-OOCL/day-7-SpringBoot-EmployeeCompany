@@ -33,8 +33,7 @@ public class CompanyController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Company> updateCompanyName(@PathVariable long id, @RequestBody Company companyUpdate) {
-        Company result = companyService.updateCompanyName(id, companyUpdate);
-        return result != null ? ResponseEntity.status(HttpStatus.OK).body(result) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body(companyService.updateCompanyName(id, companyUpdate));
     }
 
     @DeleteMapping("/{id}")

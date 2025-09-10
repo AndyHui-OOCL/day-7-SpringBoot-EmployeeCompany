@@ -29,7 +29,7 @@ public class CompanyService {
     public Company updateCompanyName(long id, Company companyUpdate) {
         Company targetCompany = companyRepository.findCompanyById(id);
         if(targetCompany == null) {
-            return null;
+            throw new CompanyNotFoundException(String.format("Company with id %d is not found",id));
         }
         return companyRepository.updateCompany(targetCompany, companyUpdate);
     }
