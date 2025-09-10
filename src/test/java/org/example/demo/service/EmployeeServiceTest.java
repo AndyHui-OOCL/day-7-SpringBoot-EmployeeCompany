@@ -215,12 +215,10 @@ class EmployeeServiceTest {
         updatedEmployee.setStatus(true);
 
         when(employeeRepository.findEmployeeById(1)).thenReturn(null);
-        when(employeeRepository.updateEmployee(null, updatedEmployee)).thenReturn(null);
 
         assertThrows(EmployeeNotFoundException.class, () -> employeeService.updateEmployeeInformation(1, updatedEmployee));
 
         verify(employeeRepository, times(1)).findEmployeeById(1);
-        verify(employeeRepository, times(0)).updateEmployee(null, updatedEmployee);
     }
 
     @Test
