@@ -39,7 +39,10 @@ public class CompanyService {
     }
 
     public void deleteCompanyById(long id) {
-        companyRepository.deleteCompanyById(id);
+        Company result = companyRepository.deleteCompanyById(id);
+        if (result == null) {
+            throw new CompanyNotFoundException(String.format("Company with id %d is not found",id));
+        }
     }
 
     public List<Company> queryCompaniesWithPagination(int page, int size) {

@@ -30,9 +30,13 @@ public class CompanyRepository {
         return targetCompany;
     }
 
-    public void deleteCompanyById(long id) {
+    public Company deleteCompanyById(long id) {
         Company targetCompany = findCompanyById(id);
+        if(targetCompany == null) {
+            return null;
+        }
         companies.remove(targetCompany);
+        return targetCompany;
     }
 
     public List<Company> findCompaniesWithPagination(int page, int size) {

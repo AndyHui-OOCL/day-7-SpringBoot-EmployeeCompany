@@ -185,6 +185,13 @@ public class CompanyControllerTest {
     }
 
     @Test
+    void should_throw_exception_when_delete_given_invalid_id() throws Exception {
+        mockMvc.perform(delete("/v1/companies/{id}", 1)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void should_return_paginated_result_when_getCompanies_given_page_and_size() throws Exception {
         String requestBody1 = """
                 {
