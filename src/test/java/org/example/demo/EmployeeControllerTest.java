@@ -256,7 +256,7 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    void should_update_age_and_salary_when_update_given_valid_id() throws Exception {
+    void should_update_employee_when_update_given_valid_id() throws Exception {
         String requestBody = """
                 {
                     "name": "John Smith",
@@ -287,6 +287,38 @@ public class EmployeeControllerTest {
                 .andExpect(jsonPath("$.salary").value(10000.0))
                 .andExpect(jsonPath("$.gender").value("Male"))
                 .andExpect(jsonPath("$.status").value(true));
+    }
+
+    @Test
+    void should_return_not_found_when_update_given_non_active_user() throws Exception {
+        String requestBody = """
+                {
+                    "name": "John Smith",
+                    "age": 34,
+                    "salary": 25000.0,
+                    "gender": "Male"
+                }
+                """;
+        mockMvc.perform(post("/v1/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody));
+
+        mockMvc.perform(delete("/v1/employees/{id}", 1)
+                .contentType(MediaType.APPLICATION_JSON));
+
+
+        String updateBody = """
+            {
+                "name" : "John Smith",
+                "age": 30,
+                "salary": 25000.0,
+                "gender": "Male"
+            }
+            """;
+        mockMvc.perform(put("/v1/employees/{id}", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updateBody))
+                .andExpect(status().isNotFound());
     }
 
     @Test

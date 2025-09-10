@@ -1,5 +1,6 @@
 package org.example.demo.controller;
 
+import org.example.demo.service.EmployeeInactiveException;
 import org.example.demo.service.EmployeeNotFoundException;
 import org.example.demo.service.InvalidEmployeeCreationCriteriaException;
 import org.springframework.http.HttpStatus;
@@ -20,4 +21,8 @@ public class GlobalExceptionHandler {
     public void handleEmployeeNotFoundException(Exception e) {
         System.out.println(e.getMessage());
     }
+
+    @ExceptionHandler(EmployeeInactiveException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public void handleEmployeeInactiveException(Exception e) {System.out.println(e.getMessage());}
 }
