@@ -38,22 +38,17 @@ public class EmployeeController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Employee> updateEmployeeInformation(@PathVariable long id, @RequestBody Employee employeeUpdate) {
-        Employee result = employeeService.updateEmployeeInformation(id, employeeUpdate);
-        return result != null ? ResponseEntity.status(HttpStatus.OK).body(result) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body(employeeService.updateEmployeeInformation(id, employeeUpdate));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmployeeById(@PathVariable long id) {
-        Employee result = employeeService.deleteEmployeeById(id);
-        if(result == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+        employeeService.deleteEmployeeById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
     @GetMapping(params = {"page", "size"})
     public ResponseEntity<List<Employee>> queryEmployeesWithPagination(@RequestParam int page, @RequestParam int size) {
-        List<Employee> queriedEmployees = employeeService.queryEmployeesWithPagination(page, size);
-        return  ResponseEntity.status(HttpStatus.OK).body(queriedEmployees);
+        return ResponseEntity.status(HttpStatus.OK).body(employeeService.queryEmployeesWithPagination(page, size));
     }
 }
