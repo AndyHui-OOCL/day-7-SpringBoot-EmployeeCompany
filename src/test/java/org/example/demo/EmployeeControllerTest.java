@@ -181,8 +181,10 @@ public class EmployeeControllerTest {
 
         String updateBody = """
             {
+                "name" : "John Smith",
                 "age": 30,
-                "salary": 10000.0
+                "salary": 10000.0,
+                "gender": "Male"
             }
             """;
         mockMvc.perform(put("/v1/employees/{id}", 1)
@@ -210,7 +212,7 @@ public class EmployeeControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody));
 
-        mockMvc.perform(delete("/v1/employees/{id}", 2)
+        mockMvc.perform(delete("/v1/employees/{id}", 1)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }

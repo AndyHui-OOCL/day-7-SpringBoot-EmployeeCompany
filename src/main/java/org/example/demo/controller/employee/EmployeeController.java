@@ -22,8 +22,9 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
-    public Employee getEmployeeById(@PathVariable long id) {
-        return employees.stream().filter(employee -> employee.getId() == id).findFirst().orElse(null);
+    public ResponseEntity<Employee> getEmployeeById(@PathVariable long id) {
+        Employee targetEmployee = employees.stream().filter(employee -> employee.getId() == id).findFirst().orElse(null);
+        return targetEmployee != null ? ResponseEntity.status(HttpStatus.OK).body(targetEmployee) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
     @GetMapping(params = "gender")
@@ -37,22 +38,33 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}")
-    public Employee updateEmployeeAgeAndSalary(@PathVariable long id, @RequestBody Employee employeeUpdate) {
+    public ResponseEntity<Employee> updateEmployeeAgeAndSalary(@PathVariable long id, @RequestBody Employee employeeUpdate) {
         Employee targetEmployee = employees.stream().filter(employee -> employee.getId() == id).findFirst().orElse(null);;
+        if(targetEmployee == null) {
+           return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
         targetEmployee.setAge(employeeUpdate.getAge());
         targetEmployee.setSalary(employeeUpdate.getSalary());
-        return targetEmployee;
+        targetEmployee.setName(employeeUpdate.getName());
+        targetEmployee.setGender(employeeUpdate.getGender());
+        return ResponseEntity.status(HttpStatus.OK).body(targetEmployee);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Employee> deleteEmployeeById(@PathVariable long id) {
+    public ResponseEntity<Void> deleteEmployeeById(@PathVariable long id) {
         Employee targetEmployee = employees.stream().filter(employee -> employee.getId() == id).findFirst().orElse(null);
+        if(targetEmployee == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
         employees.remove(targetEmployee);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
     @GetMapping(params = {"page", "size"})
-    public List<Employee> queryEmployeesWithPagination(@RequestParam int page, @RequestParam int size) {
-        return employees.stream().skip(page).limit(size).toList();
+    public ResponseEntity<List<Employee>> queryEmployeesWithPagination(@RequestParam int page, @RequestParam int size) {
+        if(size < 1 || page < 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(employees.stream().skip(page).limit(size).toList());
     }
 }
