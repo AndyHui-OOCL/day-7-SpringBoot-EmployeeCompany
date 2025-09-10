@@ -1,5 +1,7 @@
 package org.example.demo.controller.employee;
 
+import org.example.demo.service.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,60 +13,46 @@ import java.util.Map;
 @RestController
 @RequestMapping("/v1/employees")
 public class EmployeeController {
-    private final List<Employee> employees = new ArrayList<>();
-    private static long idCounter = 0;
+    @Autowired
+    private EmployeeService employeeService;
 
     @PostMapping
     public ResponseEntity<Map<String, Long>> createEmployee(@RequestBody Employee employee) {
-        employee.setId(++idCounter);
-        employees.add(employee);
-        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("id", employee.getId()));
+        Map<String, Long> result = employeeService.createEmployee(employee);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable long id) {
-        Employee targetEmployee = employees.stream().filter(employee -> employee.getId() == id).findFirst().orElse(null);
+        Employee targetEmployee = employeeService.getEmployeeById(id);
         return targetEmployee != null ? ResponseEntity.status(HttpStatus.OK).body(targetEmployee) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
     @GetMapping(params = "gender")
     public List<Employee> queryEmployeeByGender(@RequestParam String gender) {
-        return employees.stream().filter(employee -> employee.getGender().equals(gender)).toList();
+        return employeeService.queryEmployeeByGender(gender);
     }
 
     @GetMapping()
     public List<Employee> getAllEmployees() {
-        return employees;
+        return employeeService.getAllEmployees();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Employee> updateEmployeeAgeAndSalary(@PathVariable long id, @RequestBody Employee employeeUpdate) {
-        Employee targetEmployee = employees.stream().filter(employee -> employee.getId() == id).findFirst().orElse(null);
-        if(targetEmployee == null) {
-           return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-        targetEmployee.setAge(employeeUpdate.getAge());
-        targetEmployee.setSalary(employeeUpdate.getSalary());
-        targetEmployee.setName(employeeUpdate.getName());
-        targetEmployee.setGender(employeeUpdate.getGender());
-        return ResponseEntity.status(HttpStatus.OK).body(targetEmployee);
+        Employee result = employeeService.updateEmployeeAgeAndSalary(id, employeeUpdate);
+        return result != null ? ResponseEntity.status(HttpStatus.OK).body(result) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmployeeById(@PathVariable long id) {
-        Employee targetEmployee = employees.stream().filter(employee -> employee.getId() == id).findFirst().orElse(null);
-        if(targetEmployee == null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-        employees.remove(targetEmployee);
+        employeeService.deleteEmployeeById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
     @GetMapping(params = {"page", "size"})
     public ResponseEntity<List<Employee>> queryEmployeesWithPagination(@RequestParam int page, @RequestParam int size) {
-        if(size < 1 || page < 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(employees.stream().skip(page).limit(size).toList());
+        List<Employee> result = employeeService.queryEmployeesWithPagination(page,size);
+        return result != null ? ResponseEntity.status(HttpStatus.OK).body(result) : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 }
