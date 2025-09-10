@@ -162,7 +162,7 @@ public class EmployeeControllerTest {
                 .andExpect(jsonPath("$[1].name").value("Mary"))
                 .andExpect(jsonPath("$[1].age").value(31))
                 .andExpect(jsonPath("$[1].gender").value("Female"))
-                .andExpect(jsonPath("$[1].salary").value(5000.0));;
+                .andExpect(jsonPath("$[1].salary").value(5000.0));
     }
 
     @Test

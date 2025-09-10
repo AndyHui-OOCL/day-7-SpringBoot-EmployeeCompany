@@ -11,7 +11,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/v1/employees")
 public class EmployeeController {
-    private List<Employee> employees = new ArrayList<>();
+    private final List<Employee> employees = new ArrayList<>();
     private static long idCounter = 0;
 
     @PostMapping
@@ -39,7 +39,7 @@ public class EmployeeController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Employee> updateEmployeeAgeAndSalary(@PathVariable long id, @RequestBody Employee employeeUpdate) {
-        Employee targetEmployee = employees.stream().filter(employee -> employee.getId() == id).findFirst().orElse(null);;
+        Employee targetEmployee = employees.stream().filter(employee -> employee.getId() == id).findFirst().orElse(null);
         if(targetEmployee == null) {
            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
