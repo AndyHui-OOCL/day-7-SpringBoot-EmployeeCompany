@@ -19,7 +19,11 @@ public class CompanyService {
     }
 
     public Company getCompanyById(long id) {
-        return companyRepository.findCompanyById(id);
+        Company result = companyRepository.findCompanyById(id);
+        if(result == null) {
+            return null;
+        }
+        return result;
     }
 
     public List<Company> getAllCompanies() {
