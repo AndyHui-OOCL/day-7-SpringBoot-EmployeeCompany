@@ -77,7 +77,7 @@ public class CompanyControllerTest {
     }
 
     @Test
-    void should_get_company_when_get_given_invalid_company_id() throws Exception {
+    void should_throw_exception_when_get_given_invalid_company_id() throws Exception {
         String requestBody = """
                 {
                     "name": "Apple"
@@ -93,7 +93,7 @@ public class CompanyControllerTest {
     }
 
     @Test
-    void should_get_all_companies_when_get_given_given_no_parameter() throws Exception {
+    void should_get_all_companies_when_get_given_no_parameter() throws Exception {
         String requestBody1 = """
                 {
                     "name": "Apple"
@@ -147,7 +147,7 @@ public class CompanyControllerTest {
     }
 
     @Test
-    void should_throw_error_when_update_given_invalid_id() throws Exception {
+    void should_throw_exception_when_update_given_invalid_id() throws Exception {
         String requestBody = """
                 {
                     "name": "Apple"
@@ -253,7 +253,7 @@ public class CompanyControllerTest {
     }
 
     @Test
-    void should_throw_error_when_getCompanies_given_invalid_page_number() throws Exception {
+    void should_throw_exception_when_getCompanies_given_invalid_page_number() throws Exception {
         String requestBody1 = """
                 {
                     "name": "Apple1"
@@ -315,7 +315,7 @@ public class CompanyControllerTest {
     }
 
     @Test
-    void should_throw_error_when_getCompanies_given_invalid_size_number() throws Exception {
+    void should_throw_exception_when_getCompanies_given_invalid_size_number() throws Exception {
         String requestBody1 = """
                 {
                     "name": "Apple1"

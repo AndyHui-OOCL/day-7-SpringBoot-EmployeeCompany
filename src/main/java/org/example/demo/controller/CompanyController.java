@@ -43,7 +43,6 @@ public class CompanyController {
 
     @GetMapping(params = {"page", "size"})
     public ResponseEntity<List<Company>> queryCompaniesWithPagination(@RequestParam int page, @RequestParam int size) {
-        List<Company> result = companyService.queryCompaniesWithPagination(page, size);
-        return result != null ? ResponseEntity.status(HttpStatus.OK).body(result) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body(companyService.queryCompaniesWithPagination(page, size));
     }
 }
