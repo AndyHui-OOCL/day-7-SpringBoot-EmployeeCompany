@@ -58,6 +58,22 @@ class EmployeeServiceTest {
     }
 
     @Test
+    void should_throw_error_when_post_given_duplicated_employee() {
+        Employee mockEmployee = new Employee();
+        mockEmployee.setId(1);
+        mockEmployee.setName("Tom");
+        mockEmployee.setAge(30);
+        mockEmployee.setGender("Male");
+        mockEmployee.setSalary(25000.0);
+        mockEmployee.setStatus(true);
+
+        when(employeeRepository.hasDuplicateEmployee(mockEmployee)).thenReturn(true);
+
+        assertThrows(InvalidEmployeeCreationCriteriaException.class, () -> employeeService.createEmployee(mockEmployee));
+        verify(employeeRepository, never()).insertEmployee(mockEmployee);
+    }
+
+    @Test
     void should_create_employee_with_status_true_when_post_given_valid_creation_criteria() {
         Employee mockEmployee = new Employee();
         mockEmployee.setId(1);

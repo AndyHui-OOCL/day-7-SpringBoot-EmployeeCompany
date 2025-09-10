@@ -49,4 +49,11 @@ public class EmployeeRepository {
     public List<Employee> findEmployeeWithPagination(int page, int size) {
         return employees.stream().skip(page).limit(size).toList();
     }
+
+    public boolean hasDuplicateEmployee(Employee newEmployee) {
+        return employees.stream()
+                .filter(employee -> employee.getName().equals(newEmployee.getName()) && employee.getGender().equals(newEmployee.getGender()))
+                .toList()
+                .isEmpty();
+    }
 }
