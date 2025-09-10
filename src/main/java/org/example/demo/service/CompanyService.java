@@ -21,7 +21,7 @@ public class CompanyService {
     public Company getCompanyById(long id) {
         Company result = companyRepository.findCompanyById(id);
         if(result == null) {
-            return null;
+            throw new CompanyNotFoundException(String.format("Company with id %d is not found",id));
         }
         return result;
     }

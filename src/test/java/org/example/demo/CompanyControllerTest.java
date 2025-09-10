@@ -59,7 +59,7 @@ public class CompanyControllerTest {
     }
 
     @Test
-    void should_get_company_when_get_given_valid_employee_id() throws Exception {
+    void should_get_company_when_get_given_valid_company_id() throws Exception {
         String requestBody = """
                 {
                     "name": "Apple"
@@ -74,6 +74,22 @@ public class CompanyControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Apple"));
+    }
+
+    @Test
+    void should_get_company_when_get_given_invalid_company_id() throws Exception {
+        String requestBody = """
+                {
+                    "name": "Apple"
+                }
+                """;
+        mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody));
+
+        mockMvc.perform(get("/v1/companies/{id}", 2)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test

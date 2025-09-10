@@ -24,8 +24,7 @@ public class CompanyController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Company> getCompanyById(@PathVariable long id) {
-        Company result = companyService.getCompanyById(id);
-        return result != null ? ResponseEntity.status(HttpStatus.OK).body(result) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+       return ResponseEntity.status(HttpStatus.OK).body(companyService.getCompanyById(id));
      }
 
     @GetMapping
