@@ -48,7 +48,7 @@ public class EmployeeControllerTest {
                 {
                     "name": "John Smith",
                     "age": 34,
-                    "salary": 5000.0,
+                    "salary": 25000.0,
                     "gender": "Male"
                 }
                 """;
@@ -65,7 +65,7 @@ public class EmployeeControllerTest {
                 {
                     "name": "John Smith",
                     "age": 12,
-                    "salary": 5000.0,
+                    "salary": 25000.0,
                     "gender": "Male"
                 }
                 """;
@@ -97,7 +97,7 @@ public class EmployeeControllerTest {
                 {
                     "name": "John Smith",
                     "age": 34,
-                    "salary": 5000.0,
+                    "salary": 25000.0,
                     "gender": "Male"
                 }
                 """;
@@ -113,7 +113,8 @@ public class EmployeeControllerTest {
                 .andExpect(jsonPath("$.name").value("John Smith"))
                 .andExpect(jsonPath("$.age").value(34))
                 .andExpect(jsonPath("$.gender").value("Male"))
-                .andExpect(jsonPath("$.salary").value(5000.0));
+                .andExpect(jsonPath("$.salary").value(25000.0))
+                .andExpect(jsonPath("$.status").value(true));
 
     }
 
@@ -123,7 +124,7 @@ public class EmployeeControllerTest {
                 {
                     "name": "John Smith",
                     "age": 34,
-                    "salary": 5000.0,
+                    "salary": 25000.0,
                     "gender": "Male"
                 }
                 """;
@@ -143,7 +144,7 @@ public class EmployeeControllerTest {
                 {
                     "name": "John Smith",
                     "age": 34,
-                    "salary": 5000.0,
+                    "salary": 25000.0,
                     "gender": "Male"
                 }
                 """;
@@ -158,7 +159,7 @@ public class EmployeeControllerTest {
                 .andExpect(jsonPath("$[0].name").value("John Smith"))
                 .andExpect(jsonPath("$[0].age").value(34))
                 .andExpect(jsonPath("$[0].gender").value("Male"))
-                .andExpect(jsonPath("$[0].salary").value(5000.0))
+                .andExpect(jsonPath("$[0].salary").value(25000.0))
                 .andExpect(jsonPath("$[0].status").value(true));
     }
 
@@ -168,7 +169,7 @@ public class EmployeeControllerTest {
                 {
                     "name": "John Smith",
                     "age": 34,
-                    "salary": 5000.0,
+                    "salary": 25000.0,
                     "gender": "Male"
                 }
                 """;
@@ -188,7 +189,7 @@ public class EmployeeControllerTest {
                 {
                     "name": "John Smith",
                     "age": 34,
-                    "salary": 5000.0,
+                    "salary": 25000.0,
                     "gender": "Male"
                 }
                 """;
@@ -200,7 +201,7 @@ public class EmployeeControllerTest {
                 {
                     "name": "Mary",
                     "age": 31,
-                    "salary": 5000.0,
+                    "salary": 25000.0,
                     "gender": "Female"
                 }
                 """;
@@ -216,12 +217,14 @@ public class EmployeeControllerTest {
                 .andExpect(jsonPath("$[0].name").value("John Smith"))
                 .andExpect(jsonPath("$[0].age").value(34))
                 .andExpect(jsonPath("$[0].gender").value("Male"))
-                .andExpect(jsonPath("$[0].salary").value(5000.0))
+                .andExpect(jsonPath("$[0].salary").value(25000.0))
+                .andExpect(jsonPath("$[0].status").value(true))
                 .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(jsonPath("$[1].name").value("Mary"))
                 .andExpect(jsonPath("$[1].age").value(31))
                 .andExpect(jsonPath("$[1].gender").value("Female"))
-                .andExpect(jsonPath("$[1].salary").value(5000.0));
+                .andExpect(jsonPath("$[1].salary").value(25000.0))
+                .andExpect(jsonPath("$[1].status").value(true));
     }
 
     @Test
@@ -230,7 +233,7 @@ public class EmployeeControllerTest {
                 {
                     "name": "John Smith",
                     "age": 34,
-                    "salary": 5000.0,
+                    "salary": 25000.0,
                     "gender": "Male"
                 }
                 """;
@@ -254,7 +257,8 @@ public class EmployeeControllerTest {
                 .andExpect(jsonPath("$.name").value("John Smith"))
                 .andExpect(jsonPath("$.age").value(30))
                 .andExpect(jsonPath("$.salary").value(10000.0))
-                .andExpect(jsonPath("$.gender").value("Male"));
+                .andExpect(jsonPath("$.gender").value("Male"))
+                .andExpect(jsonPath("$.status").value(true));
     }
 
     @Test
@@ -263,7 +267,7 @@ public class EmployeeControllerTest {
                 {
                     "name": "Mary",
                     "age": 31,
-                    "salary": 5000.0,
+                    "salary": 25000.0,
                     "gender": "Female"
                 }
                 """;
@@ -282,7 +286,7 @@ public class EmployeeControllerTest {
                 {
                     "name": "John Smith1",
                     "age": 34,
-                    "salary": 5000.0,
+                    "salary": 25000.0,
                     "gender": "Male"
                 }
                 """;
@@ -294,7 +298,7 @@ public class EmployeeControllerTest {
                 {
                     "name": "John Smith2",
                     "age": 34,
-                    "salary": 5000.0,
+                    "salary": 25000.0,
                     "gender": "Male"
                 }
                 """;
@@ -306,7 +310,7 @@ public class EmployeeControllerTest {
                 {
                     "name": "John Smith3",
                     "age": 34,
-                    "salary": 5000.0,
+                    "salary": 25000.0,
                     "gender": "Male"
                 }
                 """;
@@ -318,7 +322,7 @@ public class EmployeeControllerTest {
                 {
                     "name": "John Smith4",
                     "age": 34,
-                    "salary": 5000.0,
+                    "salary": 25000.0,
                     "gender": "Male"
                 }
                 """;
@@ -330,7 +334,7 @@ public class EmployeeControllerTest {
                 {
                     "name": "John Smith5",
                     "age": 34,
-                    "salary": 5000.0,
+                    "salary": 25000.0,
                     "gender": "Male"
                 }
                 """;
@@ -342,7 +346,7 @@ public class EmployeeControllerTest {
                 {
                     "name": "John Smith6",
                     "age": 34,
-                    "salary": 5000.0,
+                    "salary": 25000.0,
                     "gender": "Male"
                 }
                 """;
