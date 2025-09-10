@@ -51,7 +51,7 @@ public class EmployeeRepository {
     }
 
     public boolean hasDuplicateEmployee(Employee newEmployee) {
-        return employees.stream()
+        return !employees.stream()
                 .filter(employee -> employee.getName().equals(newEmployee.getName()) && employee.getGender().equals(newEmployee.getGender()))
                 .toList()
                 .isEmpty();

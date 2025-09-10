@@ -18,7 +18,7 @@ public class EmployeeService {
         if(employee.getAge() < 18 || employee.getAge() > 65) {
             throw new InvalidEmployeeCreationCriteriaException("Employee age should be within 18 - 65");
         }
-        if(employee.getAge() >= 30 && employee.getSalary() < 20000f) {
+        if(employee.getAge() >= 30 && employee.getSalary() < 20000) {
             throw new InvalidEmployeeCreationCriteriaException("Employee at or over 30 should now have salary below 20000.00");
         }
         if(employeeRepository.hasDuplicateEmployee(employee)) {

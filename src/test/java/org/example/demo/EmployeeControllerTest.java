@@ -92,6 +92,34 @@ public class EmployeeControllerTest {
     }
 
     @Test
+    void should_not_create_employee_when_post_given_duplicated_employee() throws Exception {
+        String requestBody1 = """
+                {
+                    "name": "John Smith",
+                    "age": 30,
+                    "salary": 25000.0,
+                    "gender": "Male"
+                }
+                """;
+        mockMvc.perform(post("/v1/employees")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody1));
+
+        String requestBody2 = """
+                {
+                    "name": "John Smith",
+                    "age": 31,
+                    "salary": 15000.0,
+                    "gender": "Male"
+                }
+                """;
+        mockMvc.perform(post("/v1/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody2))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void should_get_employee_when_get_given_valid_employee_id() throws Exception {
         String requestBody = """
                 {
