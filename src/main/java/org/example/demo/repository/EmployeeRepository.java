@@ -37,9 +37,13 @@ public class EmployeeRepository {
         return targetEmployee;
     }
 
-    public void deleteEmployeeById(long id) {
+    public Long deleteEmployeeById(long id) {
         Employee targetEmployee = findEmployeeById(id);
-        employees.remove(targetEmployee);
+        if(targetEmployee == null) {
+            return null;
+        }
+        targetEmployee.setStatus(false);
+        return id;
     }
 
     public List<Employee> findEmployeeWithPagination(int page, int size) {

@@ -49,8 +49,8 @@ public class EmployeeService {
         return employeeRepository.updateEmployee(targetEmployee, employeeUpdate);
     }
 
-    public void deleteEmployeeById(long id) {
-        employeeRepository.deleteEmployeeById(id);
+    public long deleteEmployeeById(long id) {
+        return employeeRepository.deleteEmployeeById(id);
     }
 
     public List<Employee> queryEmployeesWithPagination(int page, int size) {
