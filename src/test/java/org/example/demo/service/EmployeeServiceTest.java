@@ -131,12 +131,7 @@ class EmployeeServiceTest {
 
         when(employeeRepository.deleteEmployeeById(1)).thenReturn(mockEmployee);
 
-        Employee result = employeeService.deleteEmployeeById(1);
-        assertEquals(mockEmployee.getId(), result.getId());
-        assertEquals(mockEmployee.getName(), result.getName());
-        assertEquals(mockEmployee.getSalary(), result.getSalary());
-        assertEquals(mockEmployee.getGender(), result.getGender());
-        assertEquals(mockEmployee.getAge(), result.getAge());
+        employeeService.deleteEmployeeById(1);
         assertFalse(mockEmployee.getStatus());
         verify(employeeRepository, times(1)).deleteEmployeeById(1);
     }

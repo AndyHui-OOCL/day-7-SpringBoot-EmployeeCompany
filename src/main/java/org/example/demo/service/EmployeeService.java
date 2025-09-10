@@ -55,12 +55,11 @@ public class EmployeeService {
         return employeeRepository.updateEmployee(targetEmployee, employeeUpdate);
     }
 
-    public Employee deleteEmployeeById(long id) {
+    public void deleteEmployeeById(long id) {
         Employee result = employeeRepository.deleteEmployeeById(id);
         if (result == null) {
             throw new EmployeeNotFoundException(String.format("Employee with id: %d is not found", id));
         }
-        return result;
     }
 
     public List<Employee> queryEmployeesWithPagination(int page, int size){
