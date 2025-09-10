@@ -227,4 +227,16 @@ class EmployeeServiceTest {
         verify(employeeRepository, times(1)).findEmployeeById(1);
         verify(employeeRepository, times(0)).updateEmployee(null, updatedEmployee);
     }
+
+    @Test
+    void should_throw_error_when_query_given_invalid_pagination_number_size() {
+        assertThrows(InvalidPaginationNumberException.class, () -> employeeService.queryEmployeesWithPagination(1, 0));
+        verify(employeeRepository, times(0)).findAllEmployee();
+    }
+
+    @Test
+    void should_throw_error_when_query_given_invalid_pagination_number_page() {
+        assertThrows(InvalidPaginationNumberException.class, () -> employeeService.queryEmployeesWithPagination(-1, 1));
+        verify(employeeRepository, times(0)).findAllEmployee();
+    }
 }

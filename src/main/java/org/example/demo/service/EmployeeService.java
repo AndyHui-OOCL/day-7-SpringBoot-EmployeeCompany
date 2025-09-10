@@ -63,9 +63,9 @@ public class EmployeeService {
         return result;
     }
 
-    public List<Employee> queryEmployeesWithPagination(int page, int size) {
+    public List<Employee> queryEmployeesWithPagination(int page, int size){
         if(size < 1 || page < 0) {
-            return null;
+            throw new InvalidPaginationNumberException("Page number should be large than 0 and size should be larger than 1");
         }
         return employeeRepository.findEmployeeWithPagination(page, size);
     }
