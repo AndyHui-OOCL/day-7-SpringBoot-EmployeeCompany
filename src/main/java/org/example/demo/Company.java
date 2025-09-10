@@ -1,4 +1,4 @@
-package org.example.demo.controller.company;
+package org.example.demo;
 
 public class Company {
     private long id;

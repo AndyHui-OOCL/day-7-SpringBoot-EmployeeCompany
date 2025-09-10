@@ -1,6 +1,6 @@
 package org.example.demo;
 
-import org.example.demo.controller.employee.EmployeeController;
+import org.example.demo.controller.EmployeeController;
 import org.example.demo.repository.EmployeeRepository;
 import org.example.demo.service.EmployeeService;
 import org.junit.jupiter.api.BeforeEach;

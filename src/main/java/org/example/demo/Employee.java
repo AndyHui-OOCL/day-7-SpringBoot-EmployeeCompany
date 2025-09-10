@@ -1,4 +1,4 @@
-package org.example.demo.controller.employee;
+package org.example.demo;
 
 
 public class Employee {

@@ -1,6 +1,6 @@
-package org.example.demo.controller.employee;
+package org.example.demo.controller;
 
-import org.example.demo.service.InvalidEmployeeCreationCriteriaException;
+import org.example.demo.Employee;
 import org.example.demo.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,24 +18,12 @@ public class EmployeeController {
 
     @PostMapping
     public ResponseEntity<Map<String, Long>> createEmployee(@RequestBody Employee employee) {
-        Map<String, Long> result;
-        try {
-            result = employeeService.createEmployee(employee);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+        return ResponseEntity.status(HttpStatus.CREATED).body(employeeService.createEmployee(employee));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable long id) {
-        Employee result;
-        try {
-            result = employeeService.getEmployeeById(id);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(employeeService.getEmployeeById(id));
     }
 
     @GetMapping(params = "gender")

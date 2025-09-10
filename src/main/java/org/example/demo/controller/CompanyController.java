@@ -1,5 +1,6 @@
-package org.example.demo.controller.company;
+package org.example.demo.controller;
 
+import org.example.demo.Company;
 import org.example.demo.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

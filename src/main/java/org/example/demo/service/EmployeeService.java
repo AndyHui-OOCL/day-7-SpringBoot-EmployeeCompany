@@ -1,6 +1,6 @@
 package org.example.demo.service;
 
-import org.example.demo.controller.employee.Employee;
+import org.example.demo.Employee;
 import org.example.demo.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +20,9 @@ public class EmployeeService {
         }
         if(employee.getAge() >= 30 && employee.getSalary() < 20000f) {
             throw new InvalidEmployeeCreationCriteriaException("Employee at or over 30 should now have salary below 20000.00");
+        }
+        if(hasDuplicateEmployee(employee)) {
+            throw new InvalidEmployeeCreationCriteriaException("Employee with same name and gender already exists");
         }
         employeeRepository.insertEmployee(employee);
         return Map.of("id", employee.getId());
@@ -58,5 +61,12 @@ public class EmployeeService {
             return null;
         }
         return employeeRepository.findEmployeeWithPagination(page, size);
+    }
+
+    public boolean hasDuplicateEmployee(Employee newEmployee) {
+        return !employeeRepository.findAllEmployee().stream()
+                .filter(employee -> employee.getName().equals(newEmployee.getName()) && employee.getGender().equals(newEmployee.getGender()))
+                .toList()
+                .isEmpty();
     }
 }

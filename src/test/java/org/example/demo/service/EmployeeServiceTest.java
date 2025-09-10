@@ -1,6 +1,6 @@
 package org.example.demo.service;
 
-import org.example.demo.controller.employee.Employee;
+import org.example.demo.Employee;
 import org.example.demo.repository.EmployeeRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,6 +1,6 @@
 package org.example.demo.repository;
 
-import org.example.demo.controller.employee.Employee;
+import org.example.demo.Employee;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;

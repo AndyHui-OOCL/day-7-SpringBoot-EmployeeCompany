@@ -1,6 +1,6 @@
 package org.example.demo.service;
 
-import org.example.demo.controller.company.Company;
+import org.example.demo.Company;
 import org.example.demo.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
