@@ -1,27 +1,27 @@
 package org.example.demo.service;
 
 import org.example.demo.controller.company.Company;
+import org.example.demo.repository.CompanyRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Service
 public class CompanyService {
-    private final List<Company> companies = new ArrayList<>();
-    private static long idCounter = 0;
+    @Autowired
+    private CompanyRepository companyRepository;
 
     public ResponseEntity<Map<String, Long>> createCompany(Company company) {
-        company.setId(++idCounter);
-        companies.add(company);
+        companyRepository.insertCompany(company);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("id", company.getId()));
     }
 
     public ResponseEntity<Company> getCompanyById(long id) {
-        Company targetCompany =  companies.stream().filter(company -> company.getId() == id).findFirst().orElse(null);
+        Company targetCompany = companyRepository.findCompanyById(id);
         if(targetCompany == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
@@ -29,24 +29,20 @@ public class CompanyService {
     }
 
     public List<Company> getAllCompanies() {
-        return companies;
+        return companyRepository.findAllCompanies();
     }
 
     public ResponseEntity<Company> updateCompanyName(long id, Company companyUpdate) {
-        Company targetCompany = companies.stream().filter(company -> company.getId() == id).findFirst().orElse(null);
+        Company targetCompany = companyRepository.findCompanyById(id);
         if(targetCompany == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        targetCompany.setName(companyUpdate.getName());
-        return ResponseEntity.status(HttpStatus.OK).body(targetCompany);
+        Company result = companyRepository.updateCompany(targetCompany, companyUpdate);;
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    public ResponseEntity<Company> deleteCompanyById(long id) {
-        Company targetCompany = companies.stream().filter(company -> company.getId() == id).findFirst().orElse(null);
-        if(targetCompany == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-        companies.remove(targetCompany);
+    public ResponseEntity<Void> deleteCompanyById(long id) {
+        companyRepository.deleteCompanyById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
@@ -54,6 +50,6 @@ public class CompanyService {
         if(size < 1 || page < 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(companies.stream().skip(page).limit(size).toList());
+        return ResponseEntity.status(HttpStatus.OK).body(companyRepository.findCompaniesWithPagination(page, size));
     }
 }

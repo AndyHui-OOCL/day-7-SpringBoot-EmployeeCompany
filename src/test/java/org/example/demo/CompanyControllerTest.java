@@ -1,6 +1,7 @@
 package org.example.demo;
 
 import org.example.demo.controller.company.CompanyController;
+import org.example.demo.repository.CompanyRepository;
 import org.example.demo.service.CompanyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,13 +30,16 @@ public class CompanyControllerTest {
     @Autowired
     private CompanyService companyService;
 
+    @Autowired
+    private CompanyRepository companyRepository;
+
     @BeforeEach
     void setUp() throws Exception {
-        Field companiesField = CompanyService.class.getDeclaredField("companies");
+        Field companiesField =CompanyRepository.class.getDeclaredField("companies");
         companiesField.setAccessible(true);
-        companiesField.set(companyService, new ArrayList<>());
+        companiesField.set(companyRepository, new ArrayList<>());
 
-        Field idCounterField = CompanyService.class.getDeclaredField("idCounter");
+        Field idCounterField = CompanyRepository.class.getDeclaredField("idCounter");
         idCounterField.setAccessible(true);
         idCounterField.setLong(null, 0L);
     }
