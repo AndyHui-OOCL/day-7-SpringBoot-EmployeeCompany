@@ -14,24 +14,24 @@ public class CompanyService {
     private CompanyRepository companyRepository;
 
     public Map<String, Long> createCompany(Company company) {
-        companyRepository.insertCompany(company);
+        companyRepository.createCompany(company);
         return Map.of("id", company.getId());
     }
 
     public Company getCompanyById(long id) {
-        Company result = companyRepository.findCompanyById(id);
-        if(result == null) {
+        Company retrievedComapny = companyRepository.retrieveCompanyById(id);
+        if(retrievedComapny == null) {
             throw new CompanyNotFoundException(String.format("Company with id %d is not found",id));
         }
-        return result;
+        return retrievedComapny;
     }
 
     public List<Company> getAllCompanies() {
-        return companyRepository.findAllCompanies();
+        return companyRepository.retrieveAllCompanies();
     }
 
     public Company updateCompanyName(long id, Company companyUpdate) {
-        Company targetCompany = companyRepository.findCompanyById(id);
+        Company targetCompany = companyRepository.retrieveCompanyById(id);
         if(targetCompany == null) {
             throw new CompanyNotFoundException(String.format("Company with id %d is not found",id));
         }
@@ -39,8 +39,8 @@ public class CompanyService {
     }
 
     public void deleteCompanyById(long id) {
-        Company result = companyRepository.deleteCompanyById(id);
-        if (result == null) {
+        Company companyDeleted = companyRepository.deleteCompanyById(id);
+        if (companyDeleted == null) {
             throw new CompanyNotFoundException(String.format("Company with id %d is not found",id));
         }
     }

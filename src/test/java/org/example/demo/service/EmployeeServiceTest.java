@@ -30,7 +30,7 @@ class EmployeeServiceTest {
         mockEmployee.setSalary(1000.0);
 
         assertThrows(InvalidEmployeeCreationCriteriaException.class, () -> employeeService.createEmployee(mockEmployee));
-        verify(employeeRepository, never()).insertEmployee(mockEmployee);
+        verify(employeeRepository, never()).createEmployee(mockEmployee);
     }
 
     @Test
@@ -42,7 +42,7 @@ class EmployeeServiceTest {
         mockEmployee.setSalary(1000.0);
 
         assertThrows(InvalidEmployeeCreationCriteriaException.class, () -> employeeService.createEmployee(mockEmployee));
-        verify(employeeRepository, never()).insertEmployee(mockEmployee);
+        verify(employeeRepository, never()).createEmployee(mockEmployee);
     }
 
     @Test
@@ -54,7 +54,7 @@ class EmployeeServiceTest {
         mockEmployee.setSalary(5000.0);
 
         assertThrows(InvalidEmployeeCreationCriteriaException.class, () -> employeeService.createEmployee(mockEmployee));
-        verify(employeeRepository, never()).insertEmployee(mockEmployee);
+        verify(employeeRepository, never()).createEmployee(mockEmployee);
     }
 
     @Test
@@ -70,7 +70,7 @@ class EmployeeServiceTest {
         when(employeeRepository.hasDuplicateEmployee(mockEmployee)).thenReturn(true);
 
         assertThrows(InvalidEmployeeCreationCriteriaException.class, () -> employeeService.createEmployee(mockEmployee));
-        verify(employeeRepository, never()).insertEmployee(mockEmployee);
+        verify(employeeRepository, never()).createEmployee(mockEmployee);
     }
 
     @Test
@@ -86,15 +86,15 @@ class EmployeeServiceTest {
         Map<String, Long> result = employeeService.createEmployee(mockEmployee);
         assertEquals(1, result.get("id"));
         assertTrue(mockEmployee.getStatus());
-        verify(employeeRepository, times(1)).insertEmployee(mockEmployee);
+        verify(employeeRepository, times(1)).createEmployee(mockEmployee);
     }
 
     @Test
     void should_throw_error_when_get_given_invalid_id() {
-        when(employeeRepository.findEmployeeById(anyLong())).thenReturn(null);
+        when(employeeRepository.retrieveEmployeeById(anyLong())).thenReturn(null);
 
         assertThrows(EmployeeNotFoundException.class, () -> employeeService.getEmployeeById(1));
-        verify(employeeRepository, times(1)).findEmployeeById(1);
+        verify(employeeRepository, times(1)).retrieveEmployeeById(1);
     }
 
     @Test
@@ -107,7 +107,7 @@ class EmployeeServiceTest {
         mockEmployee.setSalary(1000.0);
         mockEmployee.setStatus(true);
 
-        when(employeeRepository.findEmployeeById(1)).thenReturn(mockEmployee);
+        when(employeeRepository.retrieveEmployeeById(1)).thenReturn(mockEmployee);
 
         Employee resultEmployee = employeeService.getEmployeeById(1);
         assertEquals(mockEmployee.getId(), resultEmployee.getId());
@@ -116,7 +116,7 @@ class EmployeeServiceTest {
         assertEquals(mockEmployee.getGender(), resultEmployee.getGender());
         assertEquals(mockEmployee.getName(), resultEmployee.getName());
         assertEquals(mockEmployee.getStatus(), resultEmployee.getStatus());
-        verify(employeeRepository, times(1)).findEmployeeById(1);
+        verify(employeeRepository, times(1)).retrieveEmployeeById(1);
     }
 
     @Test
@@ -162,7 +162,7 @@ class EmployeeServiceTest {
         updatedEmployee.setSalary(21000.0);
         updatedEmployee.setStatus(true);
 
-        when(employeeRepository.findEmployeeById(1)).thenReturn(mockEmployee);
+        when(employeeRepository.retrieveEmployeeById(1)).thenReturn(mockEmployee);
         when(employeeRepository.updateEmployee(mockEmployee, updatedEmployee)).thenReturn(updatedEmployee);
 
         Employee result = employeeService.updateEmployeeInformation(1, updatedEmployee);
@@ -173,7 +173,7 @@ class EmployeeServiceTest {
         assertEquals(updatedEmployee.getId(), result.getId());
         assertTrue(updatedEmployee.getStatus());
 
-        verify(employeeRepository, times(1)).findEmployeeById(1);
+        verify(employeeRepository, times(1)).retrieveEmployeeById(1);
         verify(employeeRepository, times(1)).updateEmployee(mockEmployee, updatedEmployee);
     }
 
@@ -195,12 +195,12 @@ class EmployeeServiceTest {
         updatedEmployee.setSalary(21000.0);
         updatedEmployee.setStatus(true);
 
-        when(employeeRepository.findEmployeeById(1)).thenReturn(mockEmployee);
+        when(employeeRepository.retrieveEmployeeById(1)).thenReturn(mockEmployee);
         when(employeeRepository.updateEmployee(mockEmployee, updatedEmployee)).thenReturn(null);
 
         assertThrows(EmployeeInactiveException.class, () -> employeeService.updateEmployeeInformation(1, updatedEmployee));
 
-        verify(employeeRepository, times(1)).findEmployeeById(1);
+        verify(employeeRepository, times(1)).retrieveEmployeeById(1);
         verify(employeeRepository, times(0)).updateEmployee(mockEmployee, updatedEmployee);
     }
 
@@ -214,22 +214,23 @@ class EmployeeServiceTest {
         updatedEmployee.setSalary(21000.0);
         updatedEmployee.setStatus(true);
 
-        when(employeeRepository.findEmployeeById(1)).thenReturn(null);
+        when(employeeRepository.retrieveEmployeeById(1)).thenReturn(null);
 
         assertThrows(EmployeeNotFoundException.class, () -> employeeService.updateEmployeeInformation(1, updatedEmployee));
 
-        verify(employeeRepository, times(1)).findEmployeeById(1);
+        verify(employeeRepository, times(1)).retrieveEmployeeById(1);
+        verify(employeeRepository, times(0)).updateEmployee(any(), eq(updatedEmployee));
     }
 
     @Test
     void should_throw_error_when_query_given_invalid_pagination_number_size() {
         assertThrows(InvalidPaginationNumberException.class, () -> employeeService.queryEmployeesWithPagination(1, 0));
-        verify(employeeRepository, times(0)).findAllEmployee();
+        verify(employeeRepository, times(0)).retrieveAllEmployee();
     }
 
     @Test
     void should_throw_error_when_query_given_invalid_pagination_number_page() {
         assertThrows(InvalidPaginationNumberException.class, () -> employeeService.queryEmployeesWithPagination(-1, 1));
-        verify(employeeRepository, times(0)).findAllEmployee();
+        verify(employeeRepository, times(0)).retrieveAllEmployee();
     }
 }

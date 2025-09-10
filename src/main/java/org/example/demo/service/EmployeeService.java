@@ -24,28 +24,28 @@ public class EmployeeService {
         if(employeeRepository.hasDuplicateEmployee(employee)) {
             throw new InvalidEmployeeCreationCriteriaException("Employee with same name and gender already exists");
         }
-        employeeRepository.insertEmployee(employee);
+        employeeRepository.createEmployee(employee);
         return Map.of("id", employee.getId());
     }
 
     public Employee getEmployeeById(long id) {
-        Employee result = employeeRepository.findEmployeeById(id);
-        if(result == null) {
+        Employee retrievedEmployee = employeeRepository.retrieveEmployeeById(id);
+        if(retrievedEmployee == null) {
             throw new EmployeeNotFoundException(String.format("Employee with id %d is not found", id));
         }
-        return result;
+        return retrievedEmployee;
     }
 
     public List<Employee> queryEmployeeByGender(@RequestParam String gender) {
-        return employeeRepository.findEmployeeByGender(gender);
+        return employeeRepository.retrieveEmployeeByGender(gender);
     }
 
     public List<Employee> getAllEmployees() {
-        return employeeRepository.findAllEmployee();
+        return employeeRepository.retrieveAllEmployee();
     }
 
     public Employee updateEmployeeInformation(long id, Employee employeeUpdate) {
-        Employee targetEmployee = employeeRepository.findEmployeeById(id);
+        Employee targetEmployee = employeeRepository.retrieveEmployeeById(id);
         if(targetEmployee == null) {
             throw new EmployeeNotFoundException(String.format("Employee with id %d is not found", id));
         }
@@ -56,8 +56,8 @@ public class EmployeeService {
     }
 
     public void deleteEmployeeById(long id) {
-        Employee result = employeeRepository.deleteEmployeeById(id);
-        if (result == null) {
+        Employee deletedEmployee = employeeRepository.deleteEmployeeById(id);
+        if (deletedEmployee == null) {
             throw new EmployeeNotFoundException(String.format("Employee with id: %d is not found", id));
         }
     }
@@ -66,6 +66,6 @@ public class EmployeeService {
         if(size < 1 || page < 0) {
             throw new InvalidPaginationNumberException("Page number should be large than 0 and size should be larger than 1");
         }
-        return employeeRepository.findEmployeeWithPagination(page, size);
+        return employeeRepository.retrieveEmployeeWithPagination(page, size);
     }
 }

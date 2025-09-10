@@ -12,16 +12,16 @@ public class CompanyRepository {
     private static long idCounter = 0;
 
 
-    public void insertCompany(Company company) {
+    public void createCompany(Company company) {
         company.setId(++idCounter);
         companies.add(company);
     }
 
-    public Company findCompanyById(long id) {
+    public Company retrieveCompanyById(long id) {
         return companies.stream().filter(company -> company.getId() == id).findFirst().orElse(null);
     }
 
-    public List<Company> findAllCompanies() {
+    public List<Company> retrieveAllCompanies() {
         return companies;
     }
 
@@ -31,7 +31,7 @@ public class CompanyRepository {
     }
 
     public Company deleteCompanyById(long id) {
-        Company targetCompany = findCompanyById(id);
+        Company targetCompany = retrieveCompanyById(id);
         if(targetCompany == null) {
             return null;
         }

@@ -11,21 +11,21 @@ public class EmployeeRepository {
     private final List<Employee> employees = new ArrayList<>();
     private static long idCounter = 0;
 
-    public void insertEmployee(Employee employee) {
+    public void createEmployee(Employee employee) {
         employee.setId(++idCounter);
         employee.setStatus(true);
         employees.add(employee);
     }
 
-    public Employee findEmployeeById(long id) {
+    public Employee retrieveEmployeeById(long id) {
         return employees.stream().filter(employee -> employee.getId() == id).findFirst().orElse(null);
     }
 
-    public List<Employee> findEmployeeByGender(String gender) {
+    public List<Employee> retrieveEmployeeByGender(String gender) {
         return employees.stream().filter(employee -> employee.getGender().equals(gender)).toList();
     }
 
-    public List<Employee> findAllEmployee() {
+    public List<Employee> retrieveAllEmployee() {
         return employees;
     }
 
@@ -38,7 +38,7 @@ public class EmployeeRepository {
     }
 
     public Employee deleteEmployeeById(long id) {
-        Employee targetEmployee = findEmployeeById(id);
+        Employee targetEmployee = retrieveEmployeeById(id);
         if(targetEmployee == null) {
             return null;
         }
@@ -46,7 +46,7 @@ public class EmployeeRepository {
         return targetEmployee;
     }
 
-    public List<Employee> findEmployeeWithPagination(int page, int size) {
+    public List<Employee> retrieveEmployeeWithPagination(int page, int size) {
         return employees.stream().skip(page).limit(size).toList();
     }
 
