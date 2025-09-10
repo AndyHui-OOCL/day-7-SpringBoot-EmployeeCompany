@@ -61,6 +61,22 @@ public class EmployeeControllerTest {
     }
 
     @Test
+    void should_not_create_employee_when_post_given_invalid_age_range() throws Exception {
+        String requestBody = """
+                {
+                    "name": "John Smith",
+                    "age": 12,
+                    "salary": 5000.0,
+                    "gender": "Male"
+                }
+                """;
+        mockMvc.perform(post("/v1/employees")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void should_get_employee_when_get_given_valid_employee_id() throws Exception {
         String requestBody = """
                 {

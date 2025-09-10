@@ -15,16 +15,15 @@ public class EmployeeService {
     private EmployeeRepository employeeRepository;
 
     public Map<String, Long> createEmployee(Employee employee) {
+        if(employee.getAge() < 18 || employee.getAge() > 65) {
+            throw new EmploeeNotWithinLegalAgeException();
+        }
         employeeRepository.insertEmployee(employee);
         return Map.of("id", employee.getId());
     }
 
     public Employee getEmployeeById(long id) {
-        Employee targetEmployee = employeeRepository.findEmployeeById(id);
-        if(targetEmployee == null) {
-            return null;
-        }
-        return targetEmployee;
+        return employeeRepository.findEmployeeById(id);
     }
 
     public List<Employee> queryEmployeeByGender(@RequestParam String gender) {
