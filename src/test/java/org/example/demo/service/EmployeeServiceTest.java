@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +27,7 @@ class EmployeeServiceTest {
         mockEmployee.setGender("Male");
         mockEmployee.setSalary(1000.0);
 
-        assertThrows(EmployeeNotWithinLegalAgeException.class, () -> employeeService.createEmployee(mockEmployee));
+        assertThrows(InvalidEmployeeCreationCriteriaException.class, () -> employeeService.createEmployee(mockEmployee));
         verify(employeeRepository, never()).insertEmployee(mockEmployee);
     }
 
@@ -40,7 +39,19 @@ class EmployeeServiceTest {
         mockEmployee.setGender("Male");
         mockEmployee.setSalary(1000.0);
 
-        assertThrows(EmployeeNotWithinLegalAgeException.class, () -> employeeService.createEmployee(mockEmployee));
+        assertThrows(InvalidEmployeeCreationCriteriaException.class, () -> employeeService.createEmployee(mockEmployee));
+        verify(employeeRepository, never()).insertEmployee(mockEmployee);
+    }
+
+    @Test
+    void should_throw_error_when_create_given_employee_on_or_above_30_and_salary_below_30 () {
+        Employee mockEmployee = new Employee();
+        mockEmployee.setName("Tom");
+        mockEmployee.setAge(30);
+        mockEmployee.setGender("Male");
+        mockEmployee.setSalary(5000.0);
+
+        assertThrows(InvalidEmployeeCreationCriteriaException.class, () -> employeeService.createEmployee(mockEmployee));
         verify(employeeRepository, never()).insertEmployee(mockEmployee);
     }
 

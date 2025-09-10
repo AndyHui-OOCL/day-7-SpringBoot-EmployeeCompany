@@ -1,6 +1,6 @@
 package org.example.demo.controller.employee;
 
-import org.example.demo.service.EmployeeNotWithinLegalAgeException;
+import org.example.demo.service.InvalidEmployeeCreationCriteriaException;
 import org.example.demo.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,10 +18,10 @@ public class EmployeeController {
 
     @PostMapping
     public ResponseEntity<Map<String, Long>> createEmployee(@RequestBody Employee employee) {
-        Map<String, Long> result = null;
+        Map<String, Long> result;
         try {
             result = employeeService.createEmployee(employee);
-        } catch (EmployeeNotWithinLegalAgeException e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
@@ -29,7 +29,7 @@ public class EmployeeController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable long id) {
-        Employee result = null;
+        Employee result;
         try {
             result = employeeService.getEmployeeById(id);
         } catch (Exception e) {

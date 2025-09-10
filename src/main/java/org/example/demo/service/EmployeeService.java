@@ -16,7 +16,10 @@ public class EmployeeService {
 
     public Map<String, Long> createEmployee(Employee employee) {
         if(employee.getAge() < 18 || employee.getAge() > 65) {
-            throw new EmployeeNotWithinLegalAgeException();
+            throw new InvalidEmployeeCreationCriteriaException("Employee age should be within 18 - 65");
+        }
+        if(employee.getAge() >= 30 && employee.getSalary() < 20000f) {
+            throw new InvalidEmployeeCreationCriteriaException("Employee at or over 30 should now have salary below 20000.00");
         }
         employeeRepository.insertEmployee(employee);
         return Map.of("id", employee.getId());
