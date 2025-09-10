@@ -118,4 +118,21 @@ class EmployeeServiceTest {
         assertEquals(mockEmployee.getStatus(), resultEmployee.getStatus());
         verify(employeeRepository, times(1)).findEmployeeById(1);
     }
+
+    @Test
+    void should_delete_employee_when_delete_given_valid_employee_id() {
+        Employee mockEmployee = new Employee();
+        mockEmployee.setId(1);
+        mockEmployee.setName("Tom");
+        mockEmployee.setAge(66);
+        mockEmployee.setGender("Male");
+        mockEmployee.setSalary(1000.0);
+        mockEmployee.setStatus(false);
+
+        when(employeeRepository.deleteEmployeeById(1)).thenReturn(mockEmployee.getId());
+
+        Long resultId = employeeService.deleteEmployeeById(1);
+        assertEquals(mockEmployee.getId(), resultId);
+        assertFalse(mockEmployee.getStatus());
+    }
 }
