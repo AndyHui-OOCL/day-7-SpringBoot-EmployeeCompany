@@ -26,18 +26,18 @@ class EmployeeServiceTest {
         mockEmployee.setGender("Male");
         mockEmployee.setSalary(1000.0);
 
-        assertThrows(EmploeeNotWithinLegalAgeException.class, () -> employeeService.createEmployee(mockEmployee));
+        assertThrows(EmployeeNotWithinLegalAgeException.class, () -> employeeService.createEmployee(mockEmployee));
     }
 
     @Test
     void should_not_create_employee_when_post_given_employee_age_above_65() {
         Employee mockEmployee = new Employee();
         mockEmployee.setName("Tom");
-        mockEmployee.setAge(65);
+        mockEmployee.setAge(66);
         mockEmployee.setGender("Male");
         mockEmployee.setSalary(1000.0);
 
-        assertThrows(EmploeeNotWithinLegalAgeException.class, () -> employeeService.createEmployee(mockEmployee));
+        assertThrows(EmployeeNotWithinLegalAgeException.class, () -> employeeService.createEmployee(mockEmployee));
     }
 
 }
