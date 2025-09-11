@@ -259,7 +259,8 @@ public class EmployeeControllerTest {
                 "name" : "John Smith",
                 "age": 30,
                 "salary": 10000.0,
-                "gender": "Male"
+                "gender": "Male",
+                "status": true
             }
             """.formatted(resultId);
         mockMvc.perform(put("/v1/employees/{id}", resultId)

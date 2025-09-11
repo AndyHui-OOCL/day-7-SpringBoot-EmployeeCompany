@@ -28,7 +28,7 @@ public class EmployeeService {
         if (employeeRepository.hasDuplicateEmployee(employee)) {
             throw new InvalidEmployeeCreationCriteriaException("Employee with same name and gender already exists");
         }
-        return Map.of("id",employeeRepository.createEmployee(employee));
+        return Map.of("id", employeeRepository.createEmployee(employee));
     }
 
     public Employee getEmployeeById(long id) {

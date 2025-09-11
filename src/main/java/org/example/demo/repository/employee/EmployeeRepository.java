@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface EmployeeRepository {
     void cleanUp();
+
     long createEmployee(Employee employee);
 
     Employee retrieveEmployeeById(long id);
