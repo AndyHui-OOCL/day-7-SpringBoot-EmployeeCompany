@@ -70,17 +70,21 @@ public class EmployeeControllerTest {
 
     @Test
     void should_not_create_employee_when_post_given_invalid_age_range() throws Exception {
-        String requestBody = """
-                {
-                    "name": "John Smith",
-                    "age": 12,
-                    "salary": 25000.0,
-                    "gender": "Male"
-                }
-                """;
+        Company company = new Company();
+        company.setName("Apple");
+        companyRepository.createCompany(company);
+
+        Employee employee = new Employee();
+        employee.setName("Tom");
+        employee.setSalary(21000);
+        employee.setAge(12);
+        employee.setGender("Male");
+        employee.setStatus(true);
+        employee.setCompanyId(company.getId());
+
         mockMvc.perform(post("/v1/employees")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+                        .content(objectMapper.writeValueAsString(employee)))
                 .andExpect(status().isBadRequest());
     }
 
