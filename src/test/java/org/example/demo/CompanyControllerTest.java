@@ -24,16 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CompanyControllerTest {
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private CompanyController companyController;
-
-    @Autowired
-    private CompanyService companyService;
-
     @Autowired
     private CompanyRepository companyRepository;
-
     @Autowired
     private EmployeeRepository employeeRepository;
 
@@ -276,48 +268,42 @@ public class CompanyControllerTest {
                     "name": "Apple1"
                 }
                 """;
-
-        String requestBody = """
-                {
-                    "name": "Apple"
-                }
-                """;
-        long resultId1 = createCompany(requestBody1);
+        createCompany(requestBody1);
 
         String requestBody2 = """
                 {
                     "name": "Apple2"
                 }
                 """;
-        long resultId2 = createCompany(requestBody2);
+        createCompany(requestBody2);
 
         String requestBody3 = """
                 {
                     "name": "Apple3"
                 }
                 """;
-        long resultId3 = createCompany(requestBody3);
+        createCompany(requestBody3);
 
         String requestBody4 = """
                 {
                     "name": "Apple4"
                 }
                 """;
-        long resultId4 = createCompany(requestBody4);
+        createCompany(requestBody4);
 
         String requestBody5 = """
                 {
                     "name": "Apple5"
                 }
                 """;
-        long resultId5 = createCompany(requestBody5);
+        createCompany(requestBody5);
 
         String requestBody6 = """
                 {
                     "name": "Apple6"
                 }
                 """;
-        long resultId6 = createCompany(requestBody6);
+        createCompany(requestBody6);
 
         mockMvc.perform(get("/v1/companies?page=-1&size=5")
                         .contentType(MediaType.APPLICATION_JSON))

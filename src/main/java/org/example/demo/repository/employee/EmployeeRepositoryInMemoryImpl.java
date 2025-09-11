@@ -5,6 +5,7 @@ import org.example.demo.Employee;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class EmployeeRepositoryInMemoryImpl implements EmployeeRepository {
     private static long idCounter = 0;
     private final List<Employee> employees = new ArrayList<>();

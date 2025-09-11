@@ -5,6 +5,7 @@ import org.example.demo.Company;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class CompanyRepositoryInMemoryImpl implements CompanyRepository {
     private static long idCounter = 0;
     private final List<Company> companies = new ArrayList<>();
