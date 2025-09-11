@@ -24,11 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class EmployeeControllerTest {
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private EmployeeController employeeController;
-    @Autowired
-    private EmployeeService employeeService;
     @Autowired
     private EmployeeRepository employeeRepository;
     @Autowired
@@ -160,16 +155,19 @@ public class EmployeeControllerTest {
 
     @Test
     void should_receive_not_found_when_get_given_invalid_employee_id() throws Exception {
-        String requestBody = """
-                {
-                    "name": "John Smith",
-                    "age": 34,
-                    "salary": 25000.0,
-                    "gender": "Male",
-                    "status": true
-                }
-                """;
-        long resultId = createEmployee(requestBody);
+        Company company = new Company();
+        company.setName("Apple");
+        companyRepository.createCompany(company);
+
+        Employee employee = new Employee();
+        employee.setName("Tom");
+        employee.setSalary(25000);
+        employee.setAge(30);
+        employee.setGender("Male");
+        employee.setStatus(true);
+        employee.setCompanyId(company.getId());
+
+        long resultId = createEmployee(objectMapper.writeValueAsString(employee));
 
 
         mockMvc.perform(get("/v1/employees/{id}",  resultId + 1)
