@@ -1,8 +1,8 @@
 package org.example.demo.service;
 
 import org.example.demo.Company;
-import org.example.demo.exception.CompanyNotFoundException;
-import org.example.demo.exception.InvalidPaginationNumberException;
+import org.example.demo.service.exception.CompanyNotFoundException;
+import org.example.demo.service.exception.InvalidPaginationNumberException;
 import org.example.demo.repository.company.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
