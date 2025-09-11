@@ -212,43 +212,45 @@ public class EmployeeControllerTest {
 
     @Test
     void should_get_all_employee_when_getAll_given_2_employee() throws Exception {
-        String malEmployeeJson = """
-                {
-                    "name": "John Smith",
-                    "age": 34,
-                    "salary": 25000.0,
-                    "gender": "Male",
-                    "status": true
-                }
-                """;
-        long resultId1 = createEmployee(malEmployeeJson);
+        Company company = new Company();
+        company.setName("Apple");
+        companyRepository.createCompany(company);
 
-        String femaleEmployeeJson = """
-                {
-                    "name": "Mary",
-                    "age": 31,
-                    "salary": 25000.0,
-                    "gender": "Female",
-                    "status": true
-                }
-                """;
-        long resultId2 = createEmployee(femaleEmployeeJson);
+        Employee employee1 = new Employee();
+        employee1.setName("Tom");
+        employee1.setSalary(25000);
+        employee1.setAge(30);
+        employee1.setGender("Male");
+        employee1.setStatus(true);
+        employee1.setCompanyId(company.getId());
+
+        long resultId1 = createEmployee(objectMapper.writeValueAsString(employee1));
+
+        Employee employee2 = new Employee();
+        employee2.setName("Jane");
+        employee2.setSalary(25000);
+        employee2.setAge(30);
+        employee2.setGender("Female");
+        employee2.setStatus(true);
+        employee2.setCompanyId(company.getId());
+
+        long resultId2 = createEmployee(objectMapper.writeValueAsString(employee2));
 
         mockMvc.perform(get("/v1/employees")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].id").value(resultId1))
-                .andExpect(jsonPath("$[0].name").value("John Smith"))
-                .andExpect(jsonPath("$[0].age").value(34))
-                .andExpect(jsonPath("$[0].gender").value("Male"))
-                .andExpect(jsonPath("$[0].salary").value(25000.0))
+                .andExpect(jsonPath("$[0].name").value(employee1.getName()))
+                .andExpect(jsonPath("$[0].age").value(employee1.getAge()))
+                .andExpect(jsonPath("$[0].gender").value(employee1.getGender()))
+                .andExpect(jsonPath("$[0].salary").value(employee1.getSalary()))
                 .andExpect(jsonPath("$[0].status").value(true))
                 .andExpect(jsonPath("$[1].id").value(resultId2))
-                .andExpect(jsonPath("$[1].name").value("Mary"))
-                .andExpect(jsonPath("$[1].age").value(31))
-                .andExpect(jsonPath("$[1].gender").value("Female"))
-                .andExpect(jsonPath("$[1].salary").value(25000.0))
+                .andExpect(jsonPath("$[1].name").value(employee2.getName()))
+                .andExpect(jsonPath("$[1].age").value(employee2.getAge()))
+                .andExpect(jsonPath("$[1].gender").value(employee2.getGender()))
+                .andExpect(jsonPath("$[1].salary").value(employee2.getSalary()))
                 .andExpect(jsonPath("$[1].status").value(true));
     }
 
