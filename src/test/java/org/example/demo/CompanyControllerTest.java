@@ -42,7 +42,7 @@ public class CompanyControllerTest {
         companyRepository.cleanUp();
     }
 
-    private long createCompany(String requestBody) throws  Exception {
+    private long createCompany(String requestBody) throws Exception {
         ResultActions resultActions = mockMvc.perform(post("/v1/companies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody));
@@ -76,7 +76,7 @@ public class CompanyControllerTest {
         long resultId = createCompany(requestBody);
 
         mockMvc.perform(get("/v1/companies/{id}", resultId)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(resultId))
                 .andExpect(jsonPath("$.name").value("Apple"));
@@ -97,7 +97,7 @@ public class CompanyControllerTest {
         employeeRepository.createEmployee(employee);
 
         mockMvc.perform(get("/v1/companies/{id}", company.getId())
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(company.getId()))
                 .andExpect(jsonPath("$.employees.length()").value(1));
@@ -153,14 +153,14 @@ public class CompanyControllerTest {
         long resultId = createCompany(requestBody);
 
         String updateBody = """
-               {
-                    "id": %d,
-                    "name": "XiaoMi"
-               }
-               """.formatted(resultId);
+                {
+                     "id": %d,
+                     "name": "XiaoMi"
+                }
+                """.formatted(resultId);
         mockMvc.perform(put("/v1/companies/{id}", resultId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(updateBody))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updateBody))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(resultId))
                 .andExpect(jsonPath("$.name").value("XiaoMi"));
@@ -196,7 +196,7 @@ public class CompanyControllerTest {
         long resultId = createCompany(requestBody);
 
         mockMvc.perform(delete("/v1/companies/{id}", resultId)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
 

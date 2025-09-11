@@ -15,11 +15,13 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 public class EmployeeControllerTest {
+    ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -27,7 +29,6 @@ public class EmployeeControllerTest {
     @Autowired
     private CompanyRepository companyRepository;
 
-    ObjectMapper objectMapper = new ObjectMapper();
     @BeforeEach
     void setUp() {
         employeeRepository.cleanUp();
@@ -56,8 +57,8 @@ public class EmployeeControllerTest {
         employee.setStatus(true);
         employee.setCompanyId(company.getId());
         mockMvc.perform(post("/v1/employees")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(employee)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(employee)))
                 .andExpect(status().isCreated());
     }
 
@@ -115,11 +116,11 @@ public class EmployeeControllerTest {
         employee.setStatus(true);
         employee.setCompanyId(company.getId());
         mockMvc.perform(post("/v1/employees")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(employee)));
-        mockMvc.perform(post("/v1/employees")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(employee)))
+                .content(objectMapper.writeValueAsString(employee)));
+        mockMvc.perform(post("/v1/employees")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(employee)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -141,7 +142,7 @@ public class EmployeeControllerTest {
 
 
         mockMvc.perform(get("/v1/employees/{id}", resultId)
-                    .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(resultId))
                 .andExpect(jsonPath("$.name").value(employee.getName()))
@@ -168,7 +169,7 @@ public class EmployeeControllerTest {
         long resultId = createEmployee(objectMapper.writeValueAsString(employee));
 
 
-        mockMvc.perform(get("/v1/employees/{id}",  resultId + 1)
+        mockMvc.perform(get("/v1/employees/{id}", resultId + 1)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -190,7 +191,7 @@ public class EmployeeControllerTest {
         long resultId = createEmployee(objectMapper.writeValueAsString(employee));
 
         mockMvc.perform(get("/v1/employees?gender=Male")
-                    .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(resultId))
                 .andExpect(jsonPath("$[0].name").value(employee.getName()))
@@ -203,7 +204,7 @@ public class EmployeeControllerTest {
     @Test
     void should_get_no_employee_when_get_given_female_query() throws Exception {
         mockMvc.perform(get("/v1/employees?gender=Female")
-                    .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(0));
     }
@@ -235,7 +236,7 @@ public class EmployeeControllerTest {
         long resultId2 = createEmployee(objectMapper.writeValueAsString(employee2));
 
         mockMvc.perform(get("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].id").value(resultId1))
@@ -361,7 +362,7 @@ public class EmployeeControllerTest {
         long resultId = createEmployee(objectMapper.writeValueAsString(employee));
 
         mockMvc.perform(delete("/v1/employees/{id}", resultId)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
 
