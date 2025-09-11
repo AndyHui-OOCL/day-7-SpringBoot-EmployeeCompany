@@ -1,59 +1,23 @@
 package org.example.demo.repository;
 
 import org.example.demo.Employee;
-import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Repository
-public class EmployeeRepository {
-    private final List<Employee> employees = new ArrayList<>();
-    private static long idCounter = 0;
+public interface EmployeeRepository {
+    void createEmployee(Employee employee);
 
-    public void createEmployee(Employee employee) {
-        employee.setId(++idCounter);
-        employee.setStatus(true);
-        employees.add(employee);
-    }
+    Employee retrieveEmployeeById(long id);
 
-    public Employee retrieveEmployeeById(long id) {
-        return employees.stream().filter(employee -> employee.getId() == id).findFirst().orElse(null);
-    }
+    List<Employee> retrieveEmployeeByGender(String gender);
 
-    public List<Employee> retrieveEmployeeByGender(String gender) {
-        return employees.stream().filter(employee -> employee.getGender().equals(gender)).toList();
-    }
+    List<Employee> retrieveAllEmployee()''
 
-    public List<Employee> retrieveAllEmployee() {
-        return employees;
-    }
+    Employee updateEmployee(Employee targetEmployee, Employee employeeUpdate);
 
-    public Employee updateEmployee(Employee targetEmployee, Employee employeeUpdate) {
-        targetEmployee.setAge(employeeUpdate.getAge());
-        targetEmployee.setSalary(employeeUpdate.getSalary());
-        targetEmployee.setName(employeeUpdate.getName());
-        targetEmployee.setGender(employeeUpdate.getGender());
-        return targetEmployee;
-    }
+    Employee deleteEmployeeById(long id);
 
-    public Employee deleteEmployeeById(long id) {
-        Employee targetEmployee = retrieveEmployeeById(id);
-        if (targetEmployee == null) {
-            return null;
-        }
-        targetEmployee.setStatus(false);
-        return targetEmployee;
-    }
+    List<Employee> retrieveEmployeeWithPagination(int page, int size);
 
-    public List<Employee> retrieveEmployeeWithPagination(int page, int size) {
-        return employees.subList((page - 1) * size, page * size);
-    }
-
-    public boolean hasDuplicateEmployee(Employee newEmployee) {
-        return !employees.stream()
-                .filter(employee -> employee.getName().equals(newEmployee.getName()) && employee.getGender().equals(newEmployee.getGender()))
-                .toList()
-                .isEmpty();
-    }
+    boolean hasDuplicateEmployee(Employee newEmployee);
 }

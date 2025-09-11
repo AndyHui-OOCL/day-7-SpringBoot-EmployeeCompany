@@ -5,7 +5,7 @@ import org.example.demo.exception.EmployeeInactiveException;
 import org.example.demo.exception.EmployeeNotFoundException;
 import org.example.demo.exception.InvalidEmployeeCreationCriteriaException;
 import org.example.demo.exception.InvalidPaginationNumberException;
-import org.example.demo.repository.EmployeeRepository;
+import org.example.demo.repository.EmployeeRepositoryInMemoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,7 +16,7 @@ import java.util.Map;
 @Service
 public class EmployeeService {
     @Autowired
-    private EmployeeRepository employeeRepository;
+    private EmployeeRepositoryInMemoryImpl employeeRepository;
 
     public Map<String, Long> createEmployee(Employee employee) {
         if (employee.getAge() < 18 || employee.getAge() > 65) {
