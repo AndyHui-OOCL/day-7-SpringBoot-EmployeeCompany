@@ -320,17 +320,29 @@ public class EmployeeControllerTest {
 
     @Test
     void should_return_not_found_when_update_given_non_existing_user() throws Exception {
-        String updateBody = """
-            {
-                "name" : "John Smith",
-                "age": 30,
-                "salary": 25000.0,
-                "gender": "Male"
-            }
-            """;
-        mockMvc.perform(put("/v1/employees/{id}", 1)
+        Company company = new Company();
+        company.setName("Apple");
+        companyRepository.createCompany(company);
+
+        Employee employee = new Employee();
+        employee.setName("Tom");
+        employee.setSalary(25000);
+        employee.setAge(30);
+        employee.setGender("Male");
+        employee.setStatus(true);
+        employee.setCompanyId(company.getId());
+
+        long resultId = createEmployee(objectMapper.writeValueAsString(employee));
+
+        UpdateEmployeeRequest updateEmployeeRequest = new UpdateEmployeeRequest();
+        updateEmployeeRequest.setName("Tom");
+        updateEmployeeRequest.setSalary(21000);
+        updateEmployeeRequest.setAge(35);
+        updateEmployeeRequest.setGender("Male");
+
+        mockMvc.perform(put("/v1/employees/{id}", resultId + 1)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(updateBody))
+                        .content(objectMapper.writeValueAsString(updateEmployeeRequest)))
                 .andExpect(status().isNotFound());
     }
 
