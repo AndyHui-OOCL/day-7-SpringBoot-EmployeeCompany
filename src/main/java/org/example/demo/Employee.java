@@ -13,6 +13,8 @@ public class Employee {
     private double salary;
     private String gender;
     private boolean status;
+    @Column(name = "company_id")
+    private long companyId;
 
     public long getCompanyId() {
         return companyId;
@@ -22,19 +24,16 @@ public class Employee {
         this.companyId = companyId;
     }
 
-    @Column(name = "company_id")
-    private long companyId;
-
     public boolean isStatus() {
         return status;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public long getId() {
         return this.id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -45,36 +44,36 @@ public class Employee {
         this.name = name;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public double getSalary() {
+        return salary;
     }
 
     public void setSalary(double salary) {
         this.salary = salary;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public double getSalary() {
-        return salary;
-    }
-
     public String getGender() {
         return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public int getAge() {
         return age;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setAge(int age) {
+        this.age = age;
     }
 
     public boolean getStatus() {
         return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
 }

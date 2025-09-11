@@ -40,7 +40,7 @@ public class CompanyRepositoryDbImpl implements CompanyRepository {
 
     @Override
     public List<Company> findCompaniesWithPagination(int page, int size) {
-        return repository.findAll(PageRequest.of(page -1, size)).stream().toList();
+        return repository.findAll(PageRequest.of(page - 1, size)).stream().toList();
     }
 
     @Override

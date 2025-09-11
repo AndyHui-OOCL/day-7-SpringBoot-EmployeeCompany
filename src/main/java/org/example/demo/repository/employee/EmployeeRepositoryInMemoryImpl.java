@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeeRepositoryInMemoryImpl implements EmployeeRepository {
-    private final List<Employee> employees = new ArrayList<>();
     private static long idCounter = 0;
+    private final List<Employee> employees = new ArrayList<>();
 
     @Override
     public long createEmployee(Employee employee) {

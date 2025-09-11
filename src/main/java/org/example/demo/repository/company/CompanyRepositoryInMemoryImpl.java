@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CompanyRepositoryInMemoryImpl implements CompanyRepository {
-    private final List<Company> companies = new ArrayList<>();
     private static long idCounter = 0;
+    private final List<Company> companies = new ArrayList<>();
 
     @Override
     public void createCompany(Company company) {
