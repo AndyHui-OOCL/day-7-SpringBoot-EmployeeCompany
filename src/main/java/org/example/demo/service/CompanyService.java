@@ -1,6 +1,8 @@
 package org.example.demo.service;
 
 import org.example.demo.Company;
+import org.example.demo.exception.CompanyNotFoundException;
+import org.example.demo.exception.InvalidPaginationNumberException;
 import org.example.demo.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,8 +22,8 @@ public class CompanyService {
 
     public Company getCompanyById(long id) {
         Company retrievedCompany = companyRepository.retrieveCompanyById(id);
-        if(retrievedCompany == null) {
-            throw new CompanyNotFoundException(String.format("Company with id %d is not found",id));
+        if (retrievedCompany == null) {
+            throw new CompanyNotFoundException(String.format("Company with id %d is not found", id));
         }
         return retrievedCompany;
     }
@@ -38,12 +40,12 @@ public class CompanyService {
     public void deleteCompanyById(long id) {
         Company companyDeleted = companyRepository.deleteCompanyById(id);
         if (companyDeleted == null) {
-            throw new CompanyNotFoundException(String.format("Company with id %d is not found",id));
+            throw new CompanyNotFoundException(String.format("Company with id %d is not found", id));
         }
     }
 
     public List<Company> queryCompaniesWithPagination(int page, int size) {
-        if(size < 1 || page < 0) {
+        if (size < 1 || page < 0) {
             throw new InvalidPaginationNumberException("Page number should be large than 0 and size should be larger than 1");
         }
         return companyRepository.findCompaniesWithPagination(page, size);

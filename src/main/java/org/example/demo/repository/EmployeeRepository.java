@@ -39,7 +39,7 @@ public class EmployeeRepository {
 
     public Employee deleteEmployeeById(long id) {
         Employee targetEmployee = retrieveEmployeeById(id);
-        if(targetEmployee == null) {
+        if (targetEmployee == null) {
             return null;
         }
         targetEmployee.setStatus(false);

@@ -32,7 +32,7 @@ public class CompanyRepository {
 
     public Company deleteCompanyById(long id) {
         Company targetCompany = retrieveCompanyById(id);
-        if(targetCompany == null) {
+        if (targetCompany == null) {
             return null;
         }
         companies.remove(targetCompany);

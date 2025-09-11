@@ -24,11 +24,13 @@ public class CompanyController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Company> getCompanyById(@PathVariable long id) {
-       return ResponseEntity.status(HttpStatus.OK).body(companyService.getCompanyById(id));
-     }
+        return ResponseEntity.status(HttpStatus.OK).body(companyService.getCompanyById(id));
+    }
 
     @GetMapping
-    public List<Company> getAllCompanies() {return companyService.getAllCompanies();}
+    public List<Company> getAllCompanies() {
+        return companyService.getAllCompanies();
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<Company> updateCompanyName(@PathVariable long id, @RequestBody Company companyUpdate) {

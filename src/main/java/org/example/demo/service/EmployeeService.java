@@ -1,6 +1,10 @@
 package org.example.demo.service;
 
 import org.example.demo.Employee;
+import org.example.demo.exception.EmployeeInactiveException;
+import org.example.demo.exception.EmployeeNotFoundException;
+import org.example.demo.exception.InvalidEmployeeCreationCriteriaException;
+import org.example.demo.exception.InvalidPaginationNumberException;
 import org.example.demo.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,13 +19,13 @@ public class EmployeeService {
     private EmployeeRepository employeeRepository;
 
     public Map<String, Long> createEmployee(Employee employee) {
-        if(employee.getAge() < 18 || employee.getAge() > 65) {
+        if (employee.getAge() < 18 || employee.getAge() > 65) {
             throw new InvalidEmployeeCreationCriteriaException("Employee age should be within 18 - 65");
         }
-        if(employee.getAge() >= 30 && employee.getSalary() < 20000) {
+        if (employee.getAge() >= 30 && employee.getSalary() < 20000) {
             throw new InvalidEmployeeCreationCriteriaException("Employee at or over 30 should now have salary below 20000.00");
         }
-        if(employeeRepository.hasDuplicateEmployee(employee)) {
+        if (employeeRepository.hasDuplicateEmployee(employee)) {
             throw new InvalidEmployeeCreationCriteriaException("Employee with same name and gender already exists");
         }
         employeeRepository.createEmployee(employee);
@@ -30,7 +34,7 @@ public class EmployeeService {
 
     public Employee getEmployeeById(long id) {
         Employee retrievedEmployee = employeeRepository.retrieveEmployeeById(id);
-        if(retrievedEmployee == null) {
+        if (retrievedEmployee == null) {
             throw new EmployeeNotFoundException(String.format("Employee with id %d is not found", id));
         }
         return retrievedEmployee;
@@ -46,11 +50,12 @@ public class EmployeeService {
 
     public Employee updateEmployeeInformation(long id, Employee employeeUpdate) {
         Employee targetEmployee = getEmployeeById(id);
-        if(!targetEmployee.getStatus()) {
+        if (!targetEmployee.getStatus()) {
             throw new EmployeeInactiveException("The specified employee is inactive");
         }
         return employeeRepository.updateEmployee(targetEmployee, employeeUpdate);
     }
+
     public void deleteEmployeeById(long id) {
         Employee deletedEmployee = employeeRepository.deleteEmployeeById(id);
         if (deletedEmployee == null) {
@@ -58,8 +63,8 @@ public class EmployeeService {
         }
     }
 
-    public List<Employee> queryEmployeesWithPagination(int page, int size){
-        if(size < 1 || page < 0) {
+    public List<Employee> queryEmployeesWithPagination(int page, int size) {
+        if (size < 1 || page < 0) {
             throw new InvalidPaginationNumberException("Page number should be large than 0 and size should be larger than 1");
         }
         return employeeRepository.retrieveEmployeeWithPagination(page, size);

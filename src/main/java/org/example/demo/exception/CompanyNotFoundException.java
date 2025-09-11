@@ -1,4 +1,4 @@
-package org.example.demo.service;
+package org.example.demo.exception;
 
 public class CompanyNotFoundException extends RuntimeException {
     public CompanyNotFoundException(String message) {

@@ -1,13 +1,26 @@
 package org.example.demo;
 
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "t_employee")
 public class Employee {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
     private int age;
     private double salary;
     private String gender;
     private boolean status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Company company;
+
+    public Company getCompany() {
+        return company;
+    }
 
     public void setId(long id) {
         this.id = id;
@@ -55,5 +68,10 @@ public class Employee {
 
     public boolean getStatus() {
         return status;
+    }
+
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 }
