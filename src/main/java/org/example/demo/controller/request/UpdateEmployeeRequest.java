@@ -1,6 +1,6 @@
-package org.example.demo.controller;
+package org.example.demo.controller.request;
 
-public class UpdateEmployeeReq {
+public class UpdateEmployeeRequest {
     private String name;
     private double salary;
     private int age;

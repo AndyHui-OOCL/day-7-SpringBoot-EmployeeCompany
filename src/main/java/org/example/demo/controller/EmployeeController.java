@@ -1,6 +1,7 @@
 package org.example.demo.controller;
 
 import org.example.demo.Employee;
+import org.example.demo.controller.request.UpdateEmployeeRequest;
 import org.example.demo.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,8 +38,8 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Employee> updateEmployeeInformation(@PathVariable long id, @RequestBody UpdateEmployeeReq updateEmployeeReq) {
-        return ResponseEntity.status(HttpStatus.OK).body(employeeService.updateEmployeeInformation(id, updateEmployeeReq));
+    public ResponseEntity<Employee> updateEmployeeInformation(@PathVariable long id, @RequestBody UpdateEmployeeRequest updateEmployeeRequest) {
+        return ResponseEntity.status(HttpStatus.OK).body(employeeService.updateEmployeeInformation(id, updateEmployeeRequest));
     }
 
     @DeleteMapping("/{id}")

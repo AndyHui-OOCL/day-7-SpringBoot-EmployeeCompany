@@ -1,7 +1,6 @@
 package org.example.demo.repository.employee;
 
 import org.example.demo.Employee;
-import org.example.demo.controller.UpdateEmployeeReq;
 
 import java.util.List;
 

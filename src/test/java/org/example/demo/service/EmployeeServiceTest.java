@@ -1,14 +1,12 @@
 package org.example.demo.service;
 
 import org.example.demo.Employee;
-import org.example.demo.controller.UpdateEmployeeReq;
+import org.example.demo.controller.request.UpdateEmployeeRequest;
 import org.example.demo.exception.EmployeeInactiveException;
 import org.example.demo.exception.EmployeeNotFoundException;
 import org.example.demo.exception.InvalidEmployeeCreationCriteriaException;
 import org.example.demo.exception.InvalidPaginationNumberException;
 import org.example.demo.repository.employee.EmployeeRepository;
-import org.example.demo.repository.employee.EmployeeRepositoryInMemoryImpl;
-import org.hibernate.sql.Update;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -164,11 +162,11 @@ class EmployeeServiceTest {
         mockEmployee.setSalary(20000.0);
         mockEmployee.setStatus(true);
 
-        UpdateEmployeeReq updateEmployeeReq = new UpdateEmployeeReq();
-        updateEmployeeReq.setAge(67);
-        updateEmployeeReq.setName("Tom");
-        updateEmployeeReq.setGender("Male");
-        updateEmployeeReq.setSalary(21000.0);
+        UpdateEmployeeRequest updateEmployeeRequest = new UpdateEmployeeRequest();
+        updateEmployeeRequest.setAge(67);
+        updateEmployeeRequest.setName("Tom");
+        updateEmployeeRequest.setGender("Male");
+        updateEmployeeRequest.setSalary(21000.0);
 
         Employee updateEmployee = new Employee();
         updateEmployee.setId(1);
@@ -182,10 +180,10 @@ class EmployeeServiceTest {
         when(employeeRepository.retrieveEmployeeById(1)).thenReturn(mockEmployee);
         when(employeeRepository.updateEmployee(mockEmployee)).thenReturn(updateEmployee);
 
-        Employee result = employeeService.updateEmployeeInformation(1, updateEmployeeReq);
-        assertEquals(updateEmployeeReq.getAge(), result.getAge());
-        assertEquals(updateEmployeeReq.getGender(), result.getGender());
-        assertEquals(updateEmployeeReq.getName(), result.getName());
+        Employee result = employeeService.updateEmployeeInformation(1, updateEmployeeRequest);
+        assertEquals(updateEmployeeRequest.getAge(), result.getAge());
+        assertEquals(updateEmployeeRequest.getGender(), result.getGender());
+        assertEquals(updateEmployeeRequest.getName(), result.getName());
 
         verify(employeeRepository, times(1)).retrieveEmployeeById(1);
         verify(employeeRepository, times(1)).updateEmployee(mockEmployee);
@@ -209,12 +207,12 @@ class EmployeeServiceTest {
         updatedEmployee.setSalary(21000.0);
         updatedEmployee.setStatus(true);
 
-        UpdateEmployeeReq updateEmployeeReq = new UpdateEmployeeReq();
+        UpdateEmployeeRequest updateEmployeeRequest = new UpdateEmployeeRequest();
 
         when(employeeRepository.retrieveEmployeeById(1)).thenReturn(mockEmployee);
         when(employeeRepository.updateEmployee(mockEmployee)).thenReturn(null);
 
-        assertThrows(EmployeeInactiveException.class, () -> employeeService.updateEmployeeInformation(1, updateEmployeeReq));
+        assertThrows(EmployeeInactiveException.class, () -> employeeService.updateEmployeeInformation(1, updateEmployeeRequest));
 
         verify(employeeRepository, times(1)).retrieveEmployeeById(1);
         verify(employeeRepository, times(0)).updateEmployee(mockEmployee);
@@ -232,9 +230,9 @@ class EmployeeServiceTest {
 
         when(employeeRepository.retrieveEmployeeById(1)).thenReturn(null);
 
-        UpdateEmployeeReq updateEmployeeReq = new UpdateEmployeeReq();
+        UpdateEmployeeRequest updateEmployeeRequest = new UpdateEmployeeRequest();
 
-        assertThrows(EmployeeNotFoundException.class, () -> employeeService.updateEmployeeInformation(1, updateEmployeeReq));
+        assertThrows(EmployeeNotFoundException.class, () -> employeeService.updateEmployeeInformation(1, updateEmployeeRequest));
 
         verify(employeeRepository, times(1)).retrieveEmployeeById(1);
         verify(employeeRepository, times(0)).updateEmployee(updatedEmployee);

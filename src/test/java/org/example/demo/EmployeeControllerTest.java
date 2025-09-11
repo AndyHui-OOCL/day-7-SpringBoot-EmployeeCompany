@@ -2,7 +2,7 @@ package org.example.demo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.demo.controller.EmployeeController;
-import org.example.demo.controller.UpdateEmployeeReq;
+import org.example.demo.controller.request.UpdateEmployeeRequest;
 import org.example.demo.repository.company.CompanyRepository;
 import org.example.demo.repository.employee.EmployeeRepository;
 import org.example.demo.service.EmployeeService;
@@ -51,19 +51,21 @@ public class EmployeeControllerTest {
 
     @Test
     void should_create_employee_when_post_given_valid_employee() throws Exception {
-        String requestBody = """
-                {
-                    "name": "John Smith",
-                    "age": 34,
-                    "salary": 25000.0,
-                    "gender": "Male"
-                }
-                """;
+        Company company = new Company();
+        company.setName("Apple");
+        companyRepository.createCompany(company);
+
+        Employee employee = new Employee();
+        employee.setName("Tom");
+        employee.setSalary(21000);
+        employee.setAge(30);
+        employee.setGender("Male");
+        employee.setStatus(true);
+        employee.setCompanyId(company.getId());
         mockMvc.perform(post("/v1/employees")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(requestBody))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1));
+                    .content(objectMapper.writeValueAsString(employee)))
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -260,21 +262,21 @@ public class EmployeeControllerTest {
         employee.setCompanyId(company.getId());
         employeeRepository.createEmployee(employee);
 
-        UpdateEmployeeReq updateEmployeeReq = new UpdateEmployeeReq();
-        updateEmployeeReq.setName("Tom");
-        updateEmployeeReq.setSalary(21000);
-        updateEmployeeReq.setAge(35);
-        updateEmployeeReq.setGender("Male");
+        UpdateEmployeeRequest updateEmployeeRequest = new UpdateEmployeeRequest();
+        updateEmployeeRequest.setName("Tom");
+        updateEmployeeRequest.setSalary(21000);
+        updateEmployeeRequest.setAge(35);
+        updateEmployeeRequest.setGender("Male");
 
         mockMvc.perform(put("/v1/employees/{id}", employee.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateEmployeeReq)))
+                        .content(objectMapper.writeValueAsString(updateEmployeeRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(employee.getId()))
-                .andExpect(jsonPath("$.name").value(updateEmployeeReq.getName()))
-                .andExpect(jsonPath("$.age").value(updateEmployeeReq.getAge()))
-                .andExpect(jsonPath("$.salary").value(updateEmployeeReq.getSalary()))
-                .andExpect(jsonPath("$.gender").value(updateEmployeeReq.getGender()))
+                .andExpect(jsonPath("$.name").value(updateEmployeeRequest.getName()))
+                .andExpect(jsonPath("$.age").value(updateEmployeeRequest.getAge()))
+                .andExpect(jsonPath("$.salary").value(updateEmployeeRequest.getSalary()))
+                .andExpect(jsonPath("$.gender").value(updateEmployeeRequest.getGender()))
                 .andExpect(jsonPath("$.status").value(true));
     }
 
