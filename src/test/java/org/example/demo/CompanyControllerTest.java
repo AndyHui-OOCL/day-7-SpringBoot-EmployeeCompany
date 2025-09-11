@@ -1,10 +1,8 @@
 package org.example.demo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.demo.controller.CompanyController;
 import org.example.demo.repository.company.CompanyRepository;
 import org.example.demo.repository.employee.EmployeeRepository;
-import org.example.demo.service.CompanyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +28,7 @@ public class CompanyControllerTest {
     private EmployeeRepository employeeRepository;
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
         companyRepository.cleanUp();
     }
 
@@ -317,48 +315,42 @@ public class CompanyControllerTest {
                     "name": "Apple1"
                 }
                 """;
-
-        String requestBody = """
-                {
-                    "name": "Apple"
-                }
-                """;
-        long resultId1 = createCompany(requestBody1);
+        createCompany(requestBody1);
 
         String requestBody2 = """
                 {
                     "name": "Apple2"
                 }
                 """;
-        long resultId2 = createCompany(requestBody2);
+        createCompany(requestBody2);
 
         String requestBody3 = """
                 {
                     "name": "Apple3"
                 }
                 """;
-        long resultId3 = createCompany(requestBody3);
+        createCompany(requestBody3);
 
         String requestBody4 = """
                 {
                     "name": "Apple4"
                 }
                 """;
-        long resultId4 = createCompany(requestBody4);
+        createCompany(requestBody4);
 
         String requestBody5 = """
                 {
                     "name": "Apple5"
                 }
                 """;
-        long resultId5 = createCompany(requestBody5);
+        createCompany(requestBody5);
 
         String requestBody6 = """
                 {
                     "name": "Apple6"
                 }
                 """;
-        long resultId6 = createCompany(requestBody6);
+        createCompany(requestBody6);
 
         mockMvc.perform(get("/v1/companies?page=1&size=0")
                         .contentType(MediaType.APPLICATION_JSON))
