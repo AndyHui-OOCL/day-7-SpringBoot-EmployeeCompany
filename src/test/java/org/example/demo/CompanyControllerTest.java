@@ -252,11 +252,11 @@ public class CompanyControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(5))
-                .andExpect(jsonPath("$[0].name").value("Apple2"))
-                .andExpect(jsonPath("$[1].name").value("Apple3"))
-                .andExpect(jsonPath("$[2].name").value("Apple4"))
-                .andExpect(jsonPath("$[3].name").value("Apple5"))
-                .andExpect(jsonPath("$[4].name").value("Apple6"));
+                .andExpect(jsonPath("$[0].name").value("Apple1"))
+                .andExpect(jsonPath("$[1].name").value("Apple2"))
+                .andExpect(jsonPath("$[2].name").value("Apple3"))
+                .andExpect(jsonPath("$[3].name").value("Apple4"))
+                .andExpect(jsonPath("$[4].name").value("Apple5"));
     }
 
     @Test

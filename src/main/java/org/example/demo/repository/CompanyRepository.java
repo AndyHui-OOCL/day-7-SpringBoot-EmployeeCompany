@@ -40,6 +40,6 @@ public class CompanyRepository {
     }
 
     public List<Company> findCompaniesWithPagination(int page, int size) {
-        return companies.stream().skip(page).limit(size).toList();
+        return companies.subList((page - 1) * size, page * size);
     }
 }

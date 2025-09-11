@@ -44,6 +44,7 @@ public class EmployeeService {
         return employeeRepository.retrieveAllEmployee();
     }
 
+    // retrieve will already throw exception is not find ID
     public Employee updateEmployeeInformation(long id, Employee employeeUpdate) {
         Employee targetEmployee = employeeRepository.retrieveEmployeeById(id);
         if(targetEmployee == null) {
@@ -54,7 +55,6 @@ public class EmployeeService {
         }
         return employeeRepository.updateEmployee(targetEmployee, employeeUpdate);
     }
-
     public void deleteEmployeeById(long id) {
         Employee deletedEmployee = employeeRepository.deleteEmployeeById(id);
         if (deletedEmployee == null) {

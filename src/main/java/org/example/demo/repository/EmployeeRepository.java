@@ -47,7 +47,7 @@ public class EmployeeRepository {
     }
 
     public List<Employee> retrieveEmployeeWithPagination(int page, int size) {
-        return employees.stream().skip(page).limit(size).toList();
+        return employees.subList((page - 1) * size, page * size);
     }
 
     public boolean hasDuplicateEmployee(Employee newEmployee) {

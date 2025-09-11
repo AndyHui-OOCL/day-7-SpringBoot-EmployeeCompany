@@ -18,12 +18,13 @@ public class CompanyService {
         return Map.of("id", company.getId());
     }
 
+
     public Company getCompanyById(long id) {
-        Company retrievedComapny = companyRepository.retrieveCompanyById(id);
-        if(retrievedComapny == null) {
+        Company retrievedCompany = companyRepository.retrieveCompanyById(id);
+        if(retrievedCompany == null) {
             throw new CompanyNotFoundException(String.format("Company with id %d is not found",id));
         }
-        return retrievedComapny;
+        return retrievedCompany;
     }
 
     public List<Company> getAllCompanies() {

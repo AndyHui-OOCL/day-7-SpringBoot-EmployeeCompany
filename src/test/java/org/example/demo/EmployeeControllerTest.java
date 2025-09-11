@@ -442,11 +442,11 @@ public class EmployeeControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(5))
-                .andExpect(jsonPath("$[0].name").value("John Smith2"))
-                .andExpect(jsonPath("$[1].name").value("John Smith3"))
-                .andExpect(jsonPath("$[2].name").value("John Smith4"))
-                .andExpect(jsonPath("$[3].name").value("John Smith5"))
-                .andExpect(jsonPath("$[4].name").value("John Smith6"));
+                .andExpect(jsonPath("$[0].name").value("John Smith1"))
+                .andExpect(jsonPath("$[1].name").value("John Smith2"))
+                .andExpect(jsonPath("$[2].name").value("John Smith3"))
+                .andExpect(jsonPath("$[3].name").value("John Smith4"))
+                .andExpect(jsonPath("$[4].name").value("John Smith5"));
     }
 
     @Test
