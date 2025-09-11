@@ -400,7 +400,7 @@ public class EmployeeControllerTest {
         employee1.setStatus(true);
         employee1.setCompanyId(company.getId());
 
-        long resultId = createEmployee(objectMapper.writeValueAsString(employee1));
+        createEmployee(objectMapper.writeValueAsString(employee1));
 
         Employee employee2 = new Employee();
         employee2.setName("Tom2");
