@@ -1,11 +1,9 @@
 package org.example.demo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.demo.controller.EmployeeController;
 import org.example.demo.controller.request.UpdateEmployeeRequest;
 import org.example.demo.repository.company.CompanyRepository;
 import org.example.demo.repository.employee.EmployeeRepository;
-import org.example.demo.service.EmployeeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -390,75 +388,74 @@ public class EmployeeControllerTest {
 
     @Test
     void should_return_paginated_result_when_getEmployee_given_page_and_size() throws Exception {
-        String requestBody1 = """
-                {
-                    "name": "John Smith1",
-                    "age": 34,
-                    "salary": 25000.0,
-                    "gender": "Male"
-                }
-                """;
-        long resultId1 = createEmployee(requestBody1);
+        Company company = new Company();
+        company.setName("Apple");
+        companyRepository.createCompany(company);
 
-        String requestBody2 = """
-                {
-                    "name": "John Smith2",
-                    "age": 34,
-                    "salary": 25000.0,
-                    "gender": "Male"
-                }
-                """;
-        long resultId2 = createEmployee(requestBody2);
+        Employee employee1 = new Employee();
+        employee1.setName("Tom1");
+        employee1.setSalary(25000);
+        employee1.setAge(30);
+        employee1.setGender("Male");
+        employee1.setStatus(true);
+        employee1.setCompanyId(company.getId());
 
-        String requestBody3 = """
-                {
-                    "name": "John Smith3",
-                    "age": 34,
-                    "salary": 25000.0,
-                    "gender": "Male"
-                }
-                """;
-        long resultId3 = createEmployee(requestBody3);
+        long resultId = createEmployee(objectMapper.writeValueAsString(employee1));
 
-        String requestBody4 = """
-                {
-                    "name": "John Smith4",
-                    "age": 34,
-                    "salary": 25000.0,
-                    "gender": "Male"
-                }
-                """;
-        long resultId4 = createEmployee(requestBody4);
+        Employee employee2 = new Employee();
+        employee2.setName("Tom2");
+        employee2.setSalary(25000);
+        employee2.setAge(30);
+        employee2.setGender("Male");
+        employee2.setStatus(true);
+        employee2.setCompanyId(company.getId());
+        createEmployee(objectMapper.writeValueAsString(employee2));
 
-        String requestBody5 = """
-                {
-                    "name": "John Smith5",
-                    "age": 34,
-                    "salary": 25000.0,
-                    "gender": "Male"
-                }
-                """;
-        long resultId5 = createEmployee(requestBody5);
+        Employee employee3 = new Employee();
+        employee3.setName("Tom3");
+        employee3.setSalary(25000);
+        employee3.setAge(30);
+        employee3.setGender("Male");
+        employee3.setStatus(true);
+        employee3.setCompanyId(company.getId());
+        createEmployee(objectMapper.writeValueAsString(employee3));
 
-        String requestBody6 = """
-                {
-                    "name": "John Smith6",
-                    "age": 34,
-                    "salary": 25000.0,
-                    "gender": "Male"
-                }
-                """;
-        long resultId6 = createEmployee(requestBody6);
+        Employee employee4 = new Employee();
+        employee4.setName("Tom4");
+        employee4.setSalary(25000);
+        employee4.setAge(30);
+        employee4.setGender("Male");
+        employee4.setStatus(true);
+        employee4.setCompanyId(company.getId());
+        createEmployee(objectMapper.writeValueAsString(employee4));
+
+        Employee employee5 = new Employee();
+        employee5.setName("Tom5");
+        employee5.setSalary(25000);
+        employee5.setAge(30);
+        employee5.setGender("Male");
+        employee5.setStatus(true);
+        employee5.setCompanyId(company.getId());
+        createEmployee(objectMapper.writeValueAsString(employee5));
+
+        Employee employee6 = new Employee();
+        employee6.setName("Tom6");
+        employee6.setSalary(25000);
+        employee6.setAge(30);
+        employee6.setGender("Male");
+        employee6.setStatus(true);
+        employee6.setCompanyId(company.getId());
+        createEmployee(objectMapper.writeValueAsString(employee6));
 
         mockMvc.perform(get("/v1/employees?page=1&size=5")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(5))
-                .andExpect(jsonPath("$[0].name").value("John Smith1"))
-                .andExpect(jsonPath("$[1].name").value("John Smith2"))
-                .andExpect(jsonPath("$[2].name").value("John Smith3"))
-                .andExpect(jsonPath("$[3].name").value("John Smith4"))
-                .andExpect(jsonPath("$[4].name").value("John Smith5"));
+                .andExpect(jsonPath("$[0].name").value("Tom1"))
+                .andExpect(jsonPath("$[1].name").value("Tom2"))
+                .andExpect(jsonPath("$[2].name").value("Tom3"))
+                .andExpect(jsonPath("$[3].name").value("Tom4"))
+                .andExpect(jsonPath("$[4].name").value("Tom5"));
     }
 
     @Test
