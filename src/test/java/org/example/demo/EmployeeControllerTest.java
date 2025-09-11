@@ -2,6 +2,8 @@ package org.example.demo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.demo.controller.EmployeeController;
+import org.example.demo.controller.UpdateEmployeeReq;
+import org.example.demo.repository.company.CompanyRepository;
 import org.example.demo.repository.employee.EmployeeRepository;
 import org.example.demo.service.EmployeeService;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +31,10 @@ public class EmployeeControllerTest {
     private EmployeeService employeeService;
     @Autowired
     private EmployeeRepository employeeRepository;
+    @Autowired
+    private CompanyRepository companyRepository;
 
+    ObjectMapper objectMapper = new ObjectMapper();
     @BeforeEach
     void setUp() {
         employeeRepository.cleanUp();
@@ -242,36 +247,34 @@ public class EmployeeControllerTest {
 
     @Test
     void should_update_employee_when_update_given_valid_id() throws Exception {
-        String requestBody = """
-                {
-                    "name": "John Smith",
-                    "age": 34,
-                    "salary": 25000.0,
-                    "gender": "Male",
-                    "status": true
-                }
-                """;
-        long resultId = createEmployee(requestBody);
+        Company company = new Company();
+        company.setName("Apple");
+        companyRepository.createCompany(company);
 
-        String updateBody = """
-            {
-                "id" : %d,
-                "name" : "John Smith",
-                "age": 30,
-                "salary": 10000.0,
-                "gender": "Male",
-                "status": true
-            }
-            """.formatted(resultId);
-        mockMvc.perform(put("/v1/employees/{id}", resultId)
+        Employee employee = new Employee();
+        employee.setName("Tom");
+        employee.setSalary(21000);
+        employee.setAge(30);
+        employee.setGender("Male");
+        employee.setStatus(true);
+        employee.setCompanyId(company.getId());
+        employeeRepository.createEmployee(employee);
+
+        UpdateEmployeeReq updateEmployeeReq = new UpdateEmployeeReq();
+        updateEmployeeReq.setName("Tom");
+        updateEmployeeReq.setSalary(21000);
+        updateEmployeeReq.setAge(35);
+        updateEmployeeReq.setGender("Male");
+
+        mockMvc.perform(put("/v1/employees/{id}", employee.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(updateBody))
+                        .content(objectMapper.writeValueAsString(updateEmployeeReq)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(resultId))
-                .andExpect(jsonPath("$.name").value("John Smith"))
-                .andExpect(jsonPath("$.age").value(30))
-                .andExpect(jsonPath("$.salary").value(10000.0))
-                .andExpect(jsonPath("$.gender").value("Male"))
+                .andExpect(jsonPath("$.id").value(employee.getId()))
+                .andExpect(jsonPath("$.name").value(updateEmployeeReq.getName()))
+                .andExpect(jsonPath("$.age").value(updateEmployeeReq.getAge()))
+                .andExpect(jsonPath("$.salary").value(updateEmployeeReq.getSalary()))
+                .andExpect(jsonPath("$.gender").value(updateEmployeeReq.getGender()))
                 .andExpect(jsonPath("$.status").value(true));
     }
 

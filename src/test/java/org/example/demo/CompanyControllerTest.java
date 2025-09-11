@@ -101,8 +101,6 @@ public class CompanyControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(company.getId()))
                 .andExpect(jsonPath("$.employees.length()").value(1));
-
-
     }
 
     @Test

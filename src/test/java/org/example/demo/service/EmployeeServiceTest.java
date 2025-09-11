@@ -6,6 +6,7 @@ import org.example.demo.exception.EmployeeInactiveException;
 import org.example.demo.exception.EmployeeNotFoundException;
 import org.example.demo.exception.InvalidEmployeeCreationCriteriaException;
 import org.example.demo.exception.InvalidPaginationNumberException;
+import org.example.demo.repository.employee.EmployeeRepository;
 import org.example.demo.repository.employee.EmployeeRepositoryInMemoryImpl;
 import org.hibernate.sql.Update;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(SpringExtension.class)
 class EmployeeServiceTest {
     @Mock
-    private EmployeeRepositoryInMemoryImpl employeeRepository;
+    private EmployeeRepository employeeRepository;
 
     @InjectMocks
     private EmployeeService employeeService;
