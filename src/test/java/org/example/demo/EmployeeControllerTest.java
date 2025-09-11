@@ -369,8 +369,21 @@ public class EmployeeControllerTest {
 
     @Test
     void should_delete_employee_when_delete_given_invalid_id() throws Exception {
+        Company company = new Company();
+        company.setName("Apple");
+        companyRepository.createCompany(company);
 
-        mockMvc.perform(delete("/v1/employees/{id}", 1)
+        Employee employee = new Employee();
+        employee.setName("Tom");
+        employee.setSalary(25000);
+        employee.setAge(30);
+        employee.setGender("Male");
+        employee.setStatus(true);
+        employee.setCompanyId(company.getId());
+
+        long resultId = createEmployee(objectMapper.writeValueAsString(employee));
+
+        mockMvc.perform(delete("/v1/employees/{id}", resultId + 1)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
