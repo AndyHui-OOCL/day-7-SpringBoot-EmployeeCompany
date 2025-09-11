@@ -1,6 +1,7 @@
 package org.example.demo.repository.employee;
 
 import org.example.demo.Employee;
+import org.example.demo.controller.UpdateEmployeeReq;
 import org.example.demo.repository.dao.EmployeeJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -40,8 +41,8 @@ public class EmployeeRepositoryDbImpl implements EmployeeRepository {
     }
 
     @Override
-    public Employee updateEmployee(Employee targetEmployee, Employee employeeUpdate) {
-        return repository.save(employeeUpdate);
+    public Employee updateEmployee(Employee updateEmployee) {
+        return repository.save(updateEmployee);
     }
 
     @Override

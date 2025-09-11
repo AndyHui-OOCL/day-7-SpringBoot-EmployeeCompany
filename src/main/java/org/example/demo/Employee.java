@@ -14,13 +14,16 @@ public class Employee {
     private String gender;
     private boolean status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
-    private Company company;
-
-    public Company getCompany() {
-        return company;
+    public long getCompanyId() {
+        return companyId;
     }
+
+    public void setCompanyId(long companyId) {
+        this.companyId = companyId;
+    }
+
+    @Column(name = "company_id")
+    private long companyId;
 
     public boolean isStatus() {
         return status;
@@ -74,8 +77,4 @@ public class Employee {
         return status;
     }
 
-
-    public void setCompany(Company company) {
-        this.company = company;
-    }
 }

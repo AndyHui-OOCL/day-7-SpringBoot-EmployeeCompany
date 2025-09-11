@@ -29,11 +29,7 @@ public class EmployeeRepositoryInMemoryImpl implements EmployeeRepository {
         return employees;
     }
 
-    public Employee updateEmployee(Employee targetEmployee, Employee employeeUpdate) {
-        targetEmployee.setAge(employeeUpdate.getAge());
-        targetEmployee.setSalary(employeeUpdate.getSalary());
-        targetEmployee.setName(employeeUpdate.getName());
-        targetEmployee.setGender(employeeUpdate.getGender());
+    public Employee updateEmployee(Employee targetEmployee) {
         return targetEmployee;
     }
 

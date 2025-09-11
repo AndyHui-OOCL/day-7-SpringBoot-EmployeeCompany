@@ -1,9 +1,11 @@
 package org.example.demo.repository.company;
 
 import org.example.demo.Company;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface CompanyRepository {
     void createCompany(Company company);
 
@@ -13,7 +15,9 @@ public interface CompanyRepository {
 
     Company updateCompany(Company targetCompany, Company companyUpdate);
 
-    Company deleteCompanyById(long id);
+    void deleteCompanyById(long id);
 
     List<Company> findCompaniesWithPagination(int page, int size);
+
+    void cleanUp();
 }

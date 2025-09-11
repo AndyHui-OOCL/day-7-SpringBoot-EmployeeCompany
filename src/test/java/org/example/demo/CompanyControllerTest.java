@@ -1,7 +1,9 @@
 package org.example.demo;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.demo.controller.CompanyController;
-import org.example.demo.repository.company.CompanyRepositoryMemoryImpl;
+import org.example.demo.repository.company.CompanyRepository;
+import org.example.demo.repository.employee.EmployeeRepository;
 import org.example.demo.service.CompanyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,6 +12,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -28,11 +32,23 @@ public class CompanyControllerTest {
     private CompanyService companyService;
 
     @Autowired
-    private CompanyRepositoryMemoryImpl companyRepository;
+    private CompanyRepository companyRepository;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     @BeforeEach
     void setUp() throws Exception {
-        companyRepository.cleanup();
+        companyRepository.cleanUp();
+    }
+
+    private long createCompany(String requestBody) throws  Exception {
+        ResultActions resultActions = mockMvc.perform(post("/v1/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody));
+        MvcResult mvcResult = resultActions.andReturn();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        return new ObjectMapper().readTree(contentAsString).get("id").asLong();
     }
 
     @Test
@@ -42,11 +58,12 @@ public class CompanyControllerTest {
                     "name": "Apple"
                 }
                 """;
-        mockMvc.perform(post("/v1/companies")
+        long resultId = createCompany(requestBody);
+        mockMvc.perform(get("/v1/companies")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(resultId));
     }
 
     @Test
@@ -56,15 +73,36 @@ public class CompanyControllerTest {
                     "name": "Apple"
                 }
                 """;
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody));
+        long resultId = createCompany(requestBody);
 
-        mockMvc.perform(get("/v1/companies/{id}", 1)
+        mockMvc.perform(get("/v1/companies/{id}", resultId)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.id").value(resultId))
                 .andExpect(jsonPath("$.name").value("Apple"));
+    }
+
+    @Test
+    void should_return_company_with_employees() throws Exception {
+        Company company = new Company();
+        company.setName("Apple");
+        companyRepository.createCompany(company);
+
+        Employee employee = new Employee();
+        employee.setSalary(8000);
+        employee.setAge(30);
+        employee.setAge(2);
+        employee.setStatus(true);
+        employee.setCompanyId(company.getId());
+        employeeRepository.createEmployee(employee);
+
+        mockMvc.perform(get("/v1/companies/{id}", company.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(company.getId()))
+                .andExpect(jsonPath("$.employees.length()").value(1));
+
+
     }
 
     @Test
@@ -74,11 +112,9 @@ public class CompanyControllerTest {
                     "name": "Apple"
                 }
                 """;
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody));
+        long resultId = createCompany(requestBody);
 
-        mockMvc.perform(get("/v1/companies/{id}", 2)
+        mockMvc.perform(get("/v1/companies/{id}", resultId + 1)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -90,26 +126,22 @@ public class CompanyControllerTest {
                     "name": "Apple"
                 }
                 """;
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody1));
+        long resultId1 = createCompany(requestBody1);
 
-        String requestBody = """
+        String requestBody2 = """
                 {
                     "name": "XiaoMi"
                 }
                 """;
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody));
+        long resultId2 = createCompany(requestBody2);
 
         mockMvc.perform(get("/v1/companies")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].id").value(resultId1))
                 .andExpect(jsonPath("$[0].name").value("Apple"))
-                .andExpect(jsonPath("$[1].id").value(2))
+                .andExpect(jsonPath("$[1].id").value(resultId2))
                 .andExpect(jsonPath("$[1].name").value("XiaoMi"));
     }
 
@@ -120,20 +152,19 @@ public class CompanyControllerTest {
                     "name": "Apple"
                 }
                 """;
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody));
+        long resultId = createCompany(requestBody);
 
         String updateBody = """
-                {
+               {
+                    "id": %d,
                     "name": "XiaoMi"
-                }
-                """;
-        mockMvc.perform(put("/v1/companies/{id}", 1)
+               }
+               """.formatted(resultId);
+        mockMvc.perform(put("/v1/companies/{id}", resultId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(updateBody))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.id").value(resultId))
                 .andExpect(jsonPath("$.name").value("XiaoMi"));
     }
 
@@ -144,16 +175,14 @@ public class CompanyControllerTest {
                     "name": "Apple"
                 }
                 """;
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody));
+        long resultId = createCompany(requestBody);
 
         String updateBody = """
                 {
                     "name": "XiaoMi"
                 }
                 """;
-        mockMvc.perform(put("/v1/companies/{id}", 2)
+        mockMvc.perform(put("/v1/companies/{id}", resultId + 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updateBody))
                 .andExpect(status().isNotFound());
@@ -166,18 +195,22 @@ public class CompanyControllerTest {
                     "name": "Apple"
                 }
                 """;
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody));
+        long resultId = createCompany(requestBody);
 
-        mockMvc.perform(delete("/v1/companies/{id}", 1)
+        mockMvc.perform(delete("/v1/companies/{id}", resultId)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
 
     @Test
     void should_throw_exception_when_delete_given_invalid_id() throws Exception {
-        mockMvc.perform(delete("/v1/companies/{id}", 1)
+        String requestBody = """
+                {
+                    "name": "Apple"
+                }
+                """;
+        long resultId = createCompany(requestBody);
+        mockMvc.perform(delete("/v1/companies/{id}", resultId + 1)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -190,56 +223,49 @@ public class CompanyControllerTest {
                 }
                 """;
 
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody1));
+        String requestBody = """
+                {
+                    "name": "Apple"
+                }
+                """;
+        long resultId1 = createCompany(requestBody1);
 
         String requestBody2 = """
                 {
                     "name": "Apple2"
                 }
                 """;
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody2));
+        long resultId2 = createCompany(requestBody2);
 
         String requestBody3 = """
                 {
                     "name": "Apple3"
                 }
                 """;
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody3));
+        long resultId3 = createCompany(requestBody3);
 
         String requestBody4 = """
                 {
                     "name": "Apple4"
                 }
                 """;
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody4));
+        long resultId4 = createCompany(requestBody4);
 
         String requestBody5 = """
                 {
                     "name": "Apple5"
                 }
                 """;
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody5));
+        long resultId5 = createCompany(requestBody5);
 
         String requestBody6 = """
                 {
                     "name": "Apple6"
                 }
                 """;
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody6));
+        long resultId6 = createCompany(requestBody6);
 
-        mockMvc.perform(get("/v1/companies?page=1&size=5")
+        mockMvc.perform(get("/v1/companies?page=%1&size=5")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(5))
@@ -258,54 +284,47 @@ public class CompanyControllerTest {
                 }
                 """;
 
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody1));
+        String requestBody = """
+                {
+                    "name": "Apple"
+                }
+                """;
+        long resultId1 = createCompany(requestBody1);
 
         String requestBody2 = """
                 {
                     "name": "Apple2"
                 }
                 """;
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody2));
+        long resultId2 = createCompany(requestBody2);
 
         String requestBody3 = """
                 {
                     "name": "Apple3"
                 }
                 """;
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody3));
+        long resultId3 = createCompany(requestBody3);
 
         String requestBody4 = """
                 {
                     "name": "Apple4"
                 }
                 """;
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody4));
+        long resultId4 = createCompany(requestBody4);
 
         String requestBody5 = """
                 {
                     "name": "Apple5"
                 }
                 """;
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody5));
+        long resultId5 = createCompany(requestBody5);
 
         String requestBody6 = """
                 {
                     "name": "Apple6"
                 }
                 """;
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody6));
+        long resultId6 = createCompany(requestBody6);
 
         mockMvc.perform(get("/v1/companies?page=-1&size=5")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -320,54 +339,47 @@ public class CompanyControllerTest {
                 }
                 """;
 
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody1));
+        String requestBody = """
+                {
+                    "name": "Apple"
+                }
+                """;
+        long resultId1 = createCompany(requestBody1);
 
         String requestBody2 = """
                 {
                     "name": "Apple2"
                 }
                 """;
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody2));
+        long resultId2 = createCompany(requestBody2);
 
         String requestBody3 = """
                 {
                     "name": "Apple3"
                 }
                 """;
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody3));
+        long resultId3 = createCompany(requestBody3);
 
         String requestBody4 = """
                 {
                     "name": "Apple4"
                 }
                 """;
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody4));
+        long resultId4 = createCompany(requestBody4);
 
         String requestBody5 = """
                 {
                     "name": "Apple5"
                 }
                 """;
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody5));
+        long resultId5 = createCompany(requestBody5);
 
         String requestBody6 = """
                 {
                     "name": "Apple6"
                 }
                 """;
-        mockMvc.perform(post("/v1/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody6));
+        long resultId6 = createCompany(requestBody6);
 
         mockMvc.perform(get("/v1/companies?page=1&size=0")
                         .contentType(MediaType.APPLICATION_JSON))

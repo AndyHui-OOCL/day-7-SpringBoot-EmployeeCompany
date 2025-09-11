@@ -1,6 +1,7 @@
 package org.example.demo.service;
 
 import org.example.demo.Employee;
+import org.example.demo.controller.UpdateEmployeeReq;
 import org.example.demo.exception.EmployeeInactiveException;
 import org.example.demo.exception.EmployeeNotFoundException;
 import org.example.demo.exception.InvalidEmployeeCreationCriteriaException;
@@ -47,12 +48,16 @@ public class EmployeeService {
         return employeeRepository.retrieveAllEmployee();
     }
 
-    public Employee updateEmployeeInformation(long id, Employee employeeUpdate) {
+    public Employee updateEmployeeInformation(long id, UpdateEmployeeReq updateEmployeeReq) {
         Employee targetEmployee = getEmployeeById(id);
         if (!targetEmployee.getStatus()) {
             throw new EmployeeInactiveException("The specified employee is inactive");
         }
-        return employeeRepository.updateEmployee(targetEmployee, employeeUpdate);
+        targetEmployee.setSalary(updateEmployeeReq.getSalary());
+        targetEmployee.setAge(updateEmployeeReq.getAge());
+        targetEmployee.setGender(updateEmployeeReq.getGender());
+        targetEmployee.setName(updateEmployeeReq.getName());
+        return employeeRepository.updateEmployee(targetEmployee);
     }
 
     public void deleteEmployeeById(long id) {

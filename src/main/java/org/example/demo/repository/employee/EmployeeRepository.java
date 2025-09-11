@@ -1,6 +1,7 @@
 package org.example.demo.repository.employee;
 
 import org.example.demo.Employee;
+import org.example.demo.controller.UpdateEmployeeReq;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface EmployeeRepository {
 
     List<Employee> retrieveAllEmployee();
 
-    Employee updateEmployee(Employee targetEmployee, Employee employeeUpdate);
+    Employee updateEmployee(Employee updateEmployee);
 
     void deleteEmployeeById(long id);
 
