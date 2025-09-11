@@ -177,25 +177,28 @@ public class EmployeeControllerTest {
 
     @Test
     void should_get_male_employee_when_get_given_male_query() throws Exception {
-        String requestBody = """
-                {
-                    "name": "John Smith",
-                    "age": 34,
-                    "salary": 25000.0,
-                    "gender": "Male",
-                    "status": true
-                }
-                """;
-        long resultId = createEmployee(requestBody);
+        Company company = new Company();
+        company.setName("Apple");
+        companyRepository.createCompany(company);
+
+        Employee employee = new Employee();
+        employee.setName("Tom");
+        employee.setSalary(25000);
+        employee.setAge(30);
+        employee.setGender("Male");
+        employee.setStatus(true);
+        employee.setCompanyId(company.getId());
+
+        long resultId = createEmployee(objectMapper.writeValueAsString(employee));
 
         mockMvc.perform(get("/v1/employees?gender=Male")
                     .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(resultId))
-                .andExpect(jsonPath("$[0].name").value("John Smith"))
-                .andExpect(jsonPath("$[0].age").value(34))
-                .andExpect(jsonPath("$[0].gender").value("Male"))
-                .andExpect(jsonPath("$[0].salary").value(25000.0))
+                .andExpect(jsonPath("$[0].name").value(employee.getName()))
+                .andExpect(jsonPath("$[0].age").value(employee.getAge()))
+                .andExpect(jsonPath("$[0].gender").value(employee.getGender()))
+                .andExpect(jsonPath("$[0].salary").value(employee.getSalary()))
                 .andExpect(jsonPath("$[0].status").value(true));
     }
 
