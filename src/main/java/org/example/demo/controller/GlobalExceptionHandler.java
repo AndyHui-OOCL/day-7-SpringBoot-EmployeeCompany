@@ -23,6 +23,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EmployeeInactiveException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public void handleEmployeeInactiveException(Exception e) {
+        e.printStackTrace();
         System.out.println(e.getMessage());
     }
 

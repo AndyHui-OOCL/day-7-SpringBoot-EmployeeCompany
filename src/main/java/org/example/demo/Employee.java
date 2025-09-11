@@ -22,6 +22,10 @@ public class Employee {
         return company;
     }
 
+    public boolean isStatus() {
+        return status;
+    }
+
     public void setId(long id) {
         this.id = id;
     }

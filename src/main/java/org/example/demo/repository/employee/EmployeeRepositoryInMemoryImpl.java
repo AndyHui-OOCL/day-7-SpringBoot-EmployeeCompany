@@ -1,20 +1,20 @@
-package org.example.demo.repository;
+package org.example.demo.repository.employee;
 
 import org.example.demo.Employee;
-import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository
 public class EmployeeRepositoryInMemoryImpl implements EmployeeRepository {
     private final List<Employee> employees = new ArrayList<>();
     private static long idCounter = 0;
 
-    public void createEmployee(Employee employee) {
+    @Override
+    public long createEmployee(Employee employee) {
         employee.setId(++idCounter);
         employee.setStatus(true);
         employees.add(employee);
+        return employee.getId();
     }
 
     public Employee retrieveEmployeeById(long id) {
@@ -37,13 +37,9 @@ public class EmployeeRepositoryInMemoryImpl implements EmployeeRepository {
         return targetEmployee;
     }
 
-    public Employee deleteEmployeeById(long id) {
+    public void deleteEmployeeById(long id) {
         Employee targetEmployee = retrieveEmployeeById(id);
-        if (targetEmployee == null) {
-            return null;
-        }
         targetEmployee.setStatus(false);
-        return targetEmployee;
     }
 
     public List<Employee> retrieveEmployeeWithPagination(int page, int size) {
@@ -55,5 +51,10 @@ public class EmployeeRepositoryInMemoryImpl implements EmployeeRepository {
                 .filter(employee -> employee.getName().equals(newEmployee.getName()) && employee.getGender().equals(newEmployee.getGender()))
                 .toList()
                 .isEmpty();
+    }
+
+    public void cleanUp() {
+        employees.clear();
+        idCounter = 0;
     }
 }

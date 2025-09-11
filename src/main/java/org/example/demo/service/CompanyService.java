@@ -3,7 +3,7 @@ package org.example.demo.service;
 import org.example.demo.Company;
 import org.example.demo.exception.CompanyNotFoundException;
 import org.example.demo.exception.InvalidPaginationNumberException;
-import org.example.demo.repository.CompanyRepository;
+import org.example.demo.repository.company.CompanyRepositoryMemoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ import java.util.Map;
 @Service
 public class CompanyService {
     @Autowired
-    private CompanyRepository companyRepository;
+    private CompanyRepositoryMemoryImpl companyRepository;
 
     public Map<String, Long> createCompany(Company company) {
         companyRepository.createCompany(company);

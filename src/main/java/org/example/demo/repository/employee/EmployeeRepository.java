@@ -1,21 +1,22 @@
-package org.example.demo.repository;
+package org.example.demo.repository.employee;
 
 import org.example.demo.Employee;
 
 import java.util.List;
 
 public interface EmployeeRepository {
-    void createEmployee(Employee employee);
+    void cleanUp();
+    long createEmployee(Employee employee);
 
     Employee retrieveEmployeeById(long id);
 
     List<Employee> retrieveEmployeeByGender(String gender);
 
-    List<Employee> retrieveAllEmployee()''
+    List<Employee> retrieveAllEmployee();
 
     Employee updateEmployee(Employee targetEmployee, Employee employeeUpdate);
 
-    Employee deleteEmployeeById(long id);
+    void deleteEmployeeById(long id);
 
     List<Employee> retrieveEmployeeWithPagination(int page, int size);
 

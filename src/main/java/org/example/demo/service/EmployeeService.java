@@ -5,7 +5,7 @@ import org.example.demo.exception.EmployeeInactiveException;
 import org.example.demo.exception.EmployeeNotFoundException;
 import org.example.demo.exception.InvalidEmployeeCreationCriteriaException;
 import org.example.demo.exception.InvalidPaginationNumberException;
-import org.example.demo.repository.EmployeeRepositoryInMemoryImpl;
+import org.example.demo.repository.employee.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,7 +16,7 @@ import java.util.Map;
 @Service
 public class EmployeeService {
     @Autowired
-    private EmployeeRepositoryInMemoryImpl employeeRepository;
+    private EmployeeRepository employeeRepository;
 
     public Map<String, Long> createEmployee(Employee employee) {
         if (employee.getAge() < 18 || employee.getAge() > 65) {
@@ -28,8 +28,7 @@ public class EmployeeService {
         if (employeeRepository.hasDuplicateEmployee(employee)) {
             throw new InvalidEmployeeCreationCriteriaException("Employee with same name and gender already exists");
         }
-        employeeRepository.createEmployee(employee);
-        return Map.of("id", employee.getId());
+        return Map.of("id",employeeRepository.createEmployee(employee));
     }
 
     public Employee getEmployeeById(long id) {
@@ -57,10 +56,8 @@ public class EmployeeService {
     }
 
     public void deleteEmployeeById(long id) {
-        Employee deletedEmployee = employeeRepository.deleteEmployeeById(id);
-        if (deletedEmployee == null) {
-            throw new EmployeeNotFoundException(String.format("Employee with id: %d is not found", id));
-        }
+        getEmployeeById(id);
+        employeeRepository.deleteEmployeeById(id);
     }
 
     public List<Employee> queryEmployeesWithPagination(int page, int size) {

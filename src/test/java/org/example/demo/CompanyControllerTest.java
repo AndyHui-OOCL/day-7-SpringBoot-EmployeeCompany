@@ -1,7 +1,7 @@
 package org.example.demo;
 
 import org.example.demo.controller.CompanyController;
-import org.example.demo.repository.CompanyRepository;
+import org.example.demo.repository.company.CompanyRepositoryMemoryImpl;
 import org.example.demo.service.CompanyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,9 +10,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -31,17 +28,11 @@ public class CompanyControllerTest {
     private CompanyService companyService;
 
     @Autowired
-    private CompanyRepository companyRepository;
+    private CompanyRepositoryMemoryImpl companyRepository;
 
     @BeforeEach
     void setUp() throws Exception {
-        Field companiesField =CompanyRepository.class.getDeclaredField("companies");
-        companiesField.setAccessible(true);
-        companiesField.set(companyRepository, new ArrayList<>());
-
-        Field idCounterField = CompanyRepository.class.getDeclaredField("idCounter");
-        idCounterField.setAccessible(true);
-        idCounterField.setLong(null, 0L);
+        companyRepository.cleanup();
     }
 
     @Test

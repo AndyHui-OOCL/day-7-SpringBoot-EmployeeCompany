@@ -5,7 +5,7 @@ import org.example.demo.exception.EmployeeInactiveException;
 import org.example.demo.exception.EmployeeNotFoundException;
 import org.example.demo.exception.InvalidEmployeeCreationCriteriaException;
 import org.example.demo.exception.InvalidPaginationNumberException;
-import org.example.demo.repository.EmployeeRepositoryInMemoryImpl;
+import org.example.demo.repository.employee.EmployeeRepositoryInMemoryImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -133,7 +133,8 @@ class EmployeeServiceTest {
         mockEmployee.setSalary(10000.0);
         mockEmployee.setStatus(false);
 
-        when(employeeRepository.deleteEmployeeById(1)).thenReturn(mockEmployee);
+        when(employeeRepository.retrieveEmployeeById(1)).thenReturn(mockEmployee);
+        doNothing().when(employeeRepository).deleteEmployeeById(1);
 
         employeeService.deleteEmployeeById(1);
         assertFalse(mockEmployee.getStatus());
@@ -142,10 +143,11 @@ class EmployeeServiceTest {
 
     @Test
     void should_throw_exception_when_delete_given_invalid_employee_id() {
-        when(employeeRepository.deleteEmployeeById(1)).thenReturn(null);
+        when(employeeRepository.retrieveEmployeeById(1)).thenReturn(null);
+        doNothing().when(employeeRepository).deleteEmployeeById(1);
 
         assertThrows(EmployeeNotFoundException.class, () -> employeeService.deleteEmployeeById(1));
-        verify(employeeRepository, times(1)).deleteEmployeeById(1);
+        verify(employeeRepository, times(0)).deleteEmployeeById(1);
     }
 
     @Test

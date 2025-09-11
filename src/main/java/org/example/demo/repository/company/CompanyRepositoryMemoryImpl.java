@@ -1,4 +1,4 @@
-package org.example.demo.repository;
+package org.example.demo.repository.company;
 
 import org.example.demo.Company;
 import org.springframework.stereotype.Repository;
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class CompanyRepository {
+public class CompanyRepositoryMemoryImpl implements CompanyRepository {
     private final List<Company> companies = new ArrayList<>();
     private static long idCounter = 0;
 
@@ -41,5 +41,10 @@ public class CompanyRepository {
 
     public List<Company> findCompaniesWithPagination(int page, int size) {
         return companies.subList((page - 1) * size, page * size);
+    }
+
+    public void cleanup() {
+        companies.clear();
+        idCounter = 0;
     }
 }

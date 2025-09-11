@@ -1,7 +1,8 @@
 package org.example.demo;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.demo.controller.EmployeeController;
-import org.example.demo.repository.EmployeeRepositoryInMemoryImpl;
+import org.example.demo.repository.employee.EmployeeRepository;
 import org.example.demo.service.EmployeeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,13 +11,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -29,17 +28,20 @@ public class EmployeeControllerTest {
     @Autowired
     private EmployeeService employeeService;
     @Autowired
-    private EmployeeRepositoryInMemoryImpl employeeRepository;
+    private EmployeeRepository employeeRepository;
 
     @BeforeEach
-    void setUp() throws Exception {
-        Field companiesField = EmployeeRepositoryInMemoryImpl.class.getDeclaredField("employees");
-        companiesField.setAccessible(true);
-        companiesField.set(employeeRepository, new ArrayList<>());
+    void setUp() {
+        employeeRepository.cleanUp();
+    }
 
-        Field idCounterField = EmployeeRepositoryInMemoryImpl.class.getDeclaredField("idCounter");
-        idCounterField.setAccessible(true);
-        idCounterField.setLong(null, 0L);
+    private long createEmployee(String requestBody) throws Exception {
+        ResultActions resultActions = mockMvc.perform(post("/v1/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody));
+        MvcResult mvcResult = resultActions.andReturn();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        return new ObjectMapper().readTree(contentAsString).get("id").asLong();
     }
 
     @Test
@@ -126,18 +128,17 @@ public class EmployeeControllerTest {
                     "name": "John Smith",
                     "age": 34,
                     "salary": 25000.0,
-                    "gender": "Male"
+                    "gender": "Male",
+                    "status": true
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody));
+        long resultId = createEmployee(requestBody);
 
 
-        mockMvc.perform(get("/v1/employees/{id}", 1)
+        mockMvc.perform(get("/v1/employees/{id}", resultId)
                     .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.id").value(resultId))
                 .andExpect(jsonPath("$.name").value("John Smith"))
                 .andExpect(jsonPath("$.age").value(34))
                 .andExpect(jsonPath("$.gender").value("Male"))
@@ -153,15 +154,14 @@ public class EmployeeControllerTest {
                     "name": "John Smith",
                     "age": 34,
                     "salary": 25000.0,
-                    "gender": "Male"
+                    "gender": "Male",
+                    "status": true
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody));
+        long resultId = createEmployee(requestBody);
 
 
-        mockMvc.perform(get("/v1/employees/{id}", 2)
+        mockMvc.perform(get("/v1/employees/{id}",  resultId + 1)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -173,17 +173,16 @@ public class EmployeeControllerTest {
                     "name": "John Smith",
                     "age": 34,
                     "salary": 25000.0,
-                    "gender": "Male"
+                    "gender": "Male",
+                    "status": true
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody));
+        long resultId = createEmployee(requestBody);
 
         mockMvc.perform(get("/v1/employees?gender=Male")
                     .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].id").value(resultId))
                 .andExpect(jsonPath("$[0].name").value("John Smith"))
                 .andExpect(jsonPath("$[0].age").value(34))
                 .andExpect(jsonPath("$[0].gender").value("Male"))
@@ -193,18 +192,6 @@ public class EmployeeControllerTest {
 
     @Test
     void should_get_no_employee_when_get_given_female_query() throws Exception {
-        String requestBody = """
-                {
-                    "name": "John Smith",
-                    "age": 34,
-                    "salary": 25000.0,
-                    "gender": "Male"
-                }
-                """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody));
-
         mockMvc.perform(get("/v1/employees?gender=Female")
                     .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -218,36 +205,34 @@ public class EmployeeControllerTest {
                     "name": "John Smith",
                     "age": 34,
                     "salary": 25000.0,
-                    "gender": "Male"
+                    "gender": "Male",
+                    "status": true
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(malEmployeeJson));
+        long resultId1 = createEmployee(malEmployeeJson);
 
         String femaleEmployeeJson = """
                 {
                     "name": "Mary",
                     "age": 31,
                     "salary": 25000.0,
-                    "gender": "Female"
+                    "gender": "Female",
+                    "status": true
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(femaleEmployeeJson));
+        long resultId2 = createEmployee(femaleEmployeeJson);
 
         mockMvc.perform(get("/v1/employees")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].id").value(resultId1))
                 .andExpect(jsonPath("$[0].name").value("John Smith"))
                 .andExpect(jsonPath("$[0].age").value(34))
                 .andExpect(jsonPath("$[0].gender").value("Male"))
                 .andExpect(jsonPath("$[0].salary").value(25000.0))
                 .andExpect(jsonPath("$[0].status").value(true))
-                .andExpect(jsonPath("$[1].id").value(2))
+                .andExpect(jsonPath("$[1].id").value(resultId2))
                 .andExpect(jsonPath("$[1].name").value("Mary"))
                 .andExpect(jsonPath("$[1].age").value(31))
                 .andExpect(jsonPath("$[1].gender").value("Female"))
@@ -262,26 +247,26 @@ public class EmployeeControllerTest {
                     "name": "John Smith",
                     "age": 34,
                     "salary": 25000.0,
-                    "gender": "Male"
+                    "gender": "Male",
+                    "status": true
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody));
+        long resultId = createEmployee(requestBody);
 
         String updateBody = """
             {
+                "id" : %d,
                 "name" : "John Smith",
                 "age": 30,
                 "salary": 10000.0,
                 "gender": "Male"
             }
-            """;
-        mockMvc.perform(put("/v1/employees/{id}", 1)
+            """.formatted(resultId);
+        mockMvc.perform(put("/v1/employees/{id}", resultId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updateBody))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.id").value(resultId))
                 .andExpect(jsonPath("$.name").value("John Smith"))
                 .andExpect(jsonPath("$.age").value(30))
                 .andExpect(jsonPath("$.salary").value(10000.0))
@@ -299,11 +284,9 @@ public class EmployeeControllerTest {
                     "gender": "Male"
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody));
+        long resultId = createEmployee(requestBody);
 
-        mockMvc.perform(delete("/v1/employees/{id}", 1)
+        mockMvc.perform(delete("/v1/employees/{id}", resultId)
                 .contentType(MediaType.APPLICATION_JSON));
 
 
@@ -315,7 +298,7 @@ public class EmployeeControllerTest {
                 "gender": "Male"
             }
             """;
-        mockMvc.perform(put("/v1/employees/{id}", 1)
+        mockMvc.perform(put("/v1/employees/{id}", resultId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updateBody))
                 .andExpect(status().isNotFound());
@@ -347,11 +330,9 @@ public class EmployeeControllerTest {
                     "gender": "Female"
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody));
+        long resultId = createEmployee(requestBody);
 
-        mockMvc.perform(delete("/v1/employees/{id}", 1)
+        mockMvc.perform(delete("/v1/employees/{id}", resultId)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
@@ -374,9 +355,7 @@ public class EmployeeControllerTest {
                     "gender": "Male"
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody1));
+        long resultId1 = createEmployee(requestBody1);
 
         String requestBody2 = """
                 {
@@ -386,9 +365,7 @@ public class EmployeeControllerTest {
                     "gender": "Male"
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody2));
+        long resultId2 = createEmployee(requestBody2);
 
         String requestBody3 = """
                 {
@@ -398,9 +375,7 @@ public class EmployeeControllerTest {
                     "gender": "Male"
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody3));
+        long resultId3 = createEmployee(requestBody3);
 
         String requestBody4 = """
                 {
@@ -410,9 +385,7 @@ public class EmployeeControllerTest {
                     "gender": "Male"
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody4));
+        long resultId4 = createEmployee(requestBody4);
 
         String requestBody5 = """
                 {
@@ -422,9 +395,7 @@ public class EmployeeControllerTest {
                     "gender": "Male"
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody5));
+        long resultId5 = createEmployee(requestBody5);
 
         String requestBody6 = """
                 {
@@ -434,9 +405,7 @@ public class EmployeeControllerTest {
                     "gender": "Male"
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody6));
+        long resultId6 = createEmployee(requestBody6);
 
         mockMvc.perform(get("/v1/employees?page=1&size=5")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -459,9 +428,7 @@ public class EmployeeControllerTest {
                     "gender": "Male"
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody1));
+        long resultId1 = createEmployee(requestBody1);
 
         String requestBody2 = """
                 {
@@ -471,9 +438,7 @@ public class EmployeeControllerTest {
                     "gender": "Male"
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody2));
+        long resultId2 = createEmployee(requestBody2);
 
         String requestBody3 = """
                 {
@@ -483,9 +448,7 @@ public class EmployeeControllerTest {
                     "gender": "Male"
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody3));
+        long resultId3 = createEmployee(requestBody3);
 
         String requestBody4 = """
                 {
@@ -495,9 +458,7 @@ public class EmployeeControllerTest {
                     "gender": "Male"
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody4));
+        long resultId4 = createEmployee(requestBody4);
 
         String requestBody5 = """
                 {
@@ -507,9 +468,7 @@ public class EmployeeControllerTest {
                     "gender": "Male"
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody5));
+        long resultId5 = createEmployee(requestBody5);
 
         String requestBody6 = """
                 {
@@ -519,9 +478,7 @@ public class EmployeeControllerTest {
                     "gender": "Male"
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody6));
+        long resultId6 = createEmployee(requestBody6);
 
         mockMvc.perform(get("/v1/employees?page=-1&size=5")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -538,9 +495,7 @@ public class EmployeeControllerTest {
                     "gender": "Male"
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody1));
+        long resultId1 = createEmployee(requestBody1);
 
         String requestBody2 = """
                 {
@@ -550,9 +505,7 @@ public class EmployeeControllerTest {
                     "gender": "Male"
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody2));
+        long resultId2 = createEmployee(requestBody2);
 
         String requestBody3 = """
                 {
@@ -562,9 +515,7 @@ public class EmployeeControllerTest {
                     "gender": "Male"
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody3));
+        long resultId3 = createEmployee(requestBody3);
 
         String requestBody4 = """
                 {
@@ -574,9 +525,7 @@ public class EmployeeControllerTest {
                     "gender": "Male"
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody4));
+        long resultId4 = createEmployee(requestBody4);
 
         String requestBody5 = """
                 {
@@ -586,9 +535,7 @@ public class EmployeeControllerTest {
                     "gender": "Male"
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody5));
+        long resultId5 = createEmployee(requestBody5);
 
         String requestBody6 = """
                 {
@@ -598,9 +545,7 @@ public class EmployeeControllerTest {
                     "gender": "Male"
                 }
                 """;
-        mockMvc.perform(post("/v1/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody6));
+        long resultId6 = createEmployee(requestBody6);
 
         mockMvc.perform(get("/v1/employees?page=1&size=0")
                         .contentType(MediaType.APPLICATION_JSON))
