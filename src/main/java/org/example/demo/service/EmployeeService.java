@@ -2,11 +2,11 @@ package org.example.demo.service;
 
 import org.example.demo.Employee;
 import org.example.demo.controller.request.UpdateEmployeeRequest;
+import org.example.demo.repository.employee.EmployeeRepository;
 import org.example.demo.service.exception.EmployeeInactiveException;
 import org.example.demo.service.exception.EmployeeNotFoundException;
 import org.example.demo.service.exception.InvalidEmployeeCreationCriteriaException;
 import org.example.demo.service.exception.InvalidPaginationNumberException;
-import org.example.demo.repository.employee.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;

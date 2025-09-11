@@ -1,5 +1,6 @@
-CREATE TABLE t_company(
-    id BIGINT NOT NULL AUTO_INCREMENT,
+CREATE TABLE t_company
+(
+    id   BIGINT NOT NULL AUTO_INCREMENT,
     name VARCHAR(255),
-    PRIMARY KEY(id)
+    PRIMARY KEY (id)
 );
