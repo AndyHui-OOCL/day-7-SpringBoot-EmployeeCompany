@@ -59,7 +59,7 @@ public class CompanyControllerTest {
                 }
                 """;
         long resultId = createCompany(requestBody);
-        mockMvc.perform(get("/v1/companies")
+        mockMvc.perform(get("/v1/companies/{id}", resultId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isOk())
