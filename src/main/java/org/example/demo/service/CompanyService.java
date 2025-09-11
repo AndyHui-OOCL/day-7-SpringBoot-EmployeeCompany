@@ -18,7 +18,6 @@ public class CompanyService {
         return Map.of("id", company.getId());
     }
 
-
     public Company getCompanyById(long id) {
         Company retrievedCompany = companyRepository.retrieveCompanyById(id);
         if(retrievedCompany == null) {
@@ -32,10 +31,7 @@ public class CompanyService {
     }
 
     public Company updateCompanyName(long id, Company companyUpdate) {
-        Company targetCompany = companyRepository.retrieveCompanyById(id);
-        if(targetCompany == null) {
-            throw new CompanyNotFoundException(String.format("Company with id %d is not found",id));
-        }
+        Company targetCompany = getCompanyById(id);
         return companyRepository.updateCompany(targetCompany, companyUpdate);
     }
 

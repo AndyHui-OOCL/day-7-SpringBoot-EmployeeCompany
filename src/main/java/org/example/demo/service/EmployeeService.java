@@ -44,12 +44,8 @@ public class EmployeeService {
         return employeeRepository.retrieveAllEmployee();
     }
 
-    // retrieve will already throw exception is not find ID
     public Employee updateEmployeeInformation(long id, Employee employeeUpdate) {
-        Employee targetEmployee = employeeRepository.retrieveEmployeeById(id);
-        if(targetEmployee == null) {
-            throw new EmployeeNotFoundException(String.format("Employee with id %d is not found", id));
-        }
+        Employee targetEmployee = getEmployeeById(id);
         if(!targetEmployee.getStatus()) {
             throw new EmployeeInactiveException("The specified employee is inactive");
         }
